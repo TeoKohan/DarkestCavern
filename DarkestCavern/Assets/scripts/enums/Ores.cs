@@ -1,0 +1,1 @@
+﻿public enum Ore {silver, gold, ruby, emerald, saphire, diamond}

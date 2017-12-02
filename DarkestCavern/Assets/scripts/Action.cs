@@ -1,1 +1,0 @@
-﻿public enum Action {idle, move, action, finish_action, pause, unpause, mute}

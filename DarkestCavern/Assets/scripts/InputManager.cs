@@ -2,46 +2,106 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputManager : MonoBehaviour {
+public class InputManager {
 
-	private Dictionary<Action, KeyCode> actions;
+	private Dictionary<KeyCode, GameAction> gameActions;
+	private Dictionary<KeyCode, CharacterAction> characterActions;
+	private Dictionary<KeyCode, PickaxeAction> pickaxeActions;
 
-	public Action action { get; private set;}
-	public float movement { get; private set;}
+	public InputManager() {
 
-	public void initialize() {
-		actions = new Dictionary<Action, KeyCode> ();
-		actions.Add (Action.action, KeyCode.Space);
+		gameActions = new Dictionary<KeyCode, GameAction> ();
+
+		gameActions.Add (KeyCode.Escape, GameAction.pause);
+		gameActions.Add (KeyCode.Backspace, GameAction.pause);
+		gameActions.Add (KeyCode.M, GameAction.mute);
+
+		characterActions = new Dictionary<KeyCode, CharacterAction> ();
+
+		characterActions.Add (KeyCode.Space, CharacterAction.action);
+		characterActions.Add (KeyCode.LeftArrow, CharacterAction.move);
+		characterActions.Add (KeyCode.RightArrow, CharacterAction.move);
+		characterActions.Add (KeyCode.A, CharacterAction.move);
+		characterActions.Add (KeyCode.D, CharacterAction.move);
+
+		pickaxeActions = new Dictionary<KeyCode, PickaxeAction> ();
+
+		pickaxeActions.Add (KeyCode.Space, PickaxeAction.spacebar);
+		pickaxeActions.Add (KeyCode.LeftArrow, PickaxeAction.left_arrow);
+		pickaxeActions.Add (KeyCode.UpArrow, PickaxeAction.up_arrow);
+		pickaxeActions.Add (KeyCode.RightArrow, PickaxeAction.right_arrow);
+		pickaxeActions.Add (KeyCode.DownArrow, PickaxeAction.down_arrow);
+		pickaxeActions.Add (KeyCode.A, PickaxeAction.left_arrow);
+		pickaxeActions.Add (KeyCode.W, PickaxeAction.up_arrow);
+		pickaxeActions.Add (KeyCode.D, PickaxeAction.right_arrow);
+		pickaxeActions.Add (KeyCode.S, PickaxeAction.down_arrow);
 	}
 
-	public void handleInput() {
+	public GameAction gameInput() {
 
-		handleAction ();
-		handleMotion ();
+		GameAction action = handleGameAction (gameActions);
+
+		return action;
 	}
 
-	private Action handleAction() {
+	public CharacterInputData characterInput() {
+
+		CharacterAction action = handleCharacterAction (characterActions);
+		float movement = handleMotion ();
+
+		return new CharacterInputData (action, movement);
+	}
+
+	public PickaxeAction pickaxeInput() {
+
+		PickaxeAction action = handlePickaxeAction (pickaxeActions);
+
+		return action;
+	}
+
+	private GameAction handleGameAction(Dictionary<KeyCode, GameAction> actions) {
 		
-		KeyCode keycode;
-		foreach (Action A in actions.Keys) {
-			actions.TryGetValue(A, out keycode);
-			if (Input.GetKey (keycode)) {
-				return A;
+		foreach (KeyCode K in actions.Keys) {
+			if (Input.GetKey (K)) {
+				
+				GameAction action;
+				actions.TryGetValue(K, out action);
+				return action;
 			}
 		}
 
-		return Action.idle;
+		return GameAction.idle;
+	}
+
+	private CharacterAction handleCharacterAction(Dictionary<KeyCode, CharacterAction> actions) {
+
+		foreach (KeyCode K in actions.Keys) {
+			if (Input.GetKey (K)) {
+
+				CharacterAction action;
+				actions.TryGetValue(K, out action);
+				return action;
+			}
+		}
+
+		return CharacterAction.idle;
+	}
+
+	private PickaxeAction handlePickaxeAction(Dictionary<KeyCode, PickaxeAction> actions) {
+
+		foreach (KeyCode K in actions.Keys) {
+			if (Input.GetKey (K)) {
+
+				PickaxeAction action;
+				actions.TryGetValue(K, out action);
+				return action;
+			}
+		}
+
+		return PickaxeAction.idle;
 	}
 
 	private float handleMotion() {
 		return Input.GetAxis ("Horizontal");
-	}
-
-	public Action getAction() {
-		return action;
-	}
-
-	public float getMovement() {
-		return movement;
 	}
 }

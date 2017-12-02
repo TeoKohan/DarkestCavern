@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Zone : MonoBehaviour {
+public class Zone {
+	public List<Node> nodes;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	public Zone (List<Node> nodes) {
+		this.nodes = nodes;
 	}
 }

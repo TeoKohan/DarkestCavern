@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MiningNode : MonoBehaviour {
+public class Node : MonoBehaviour {
 
 	public GameObject ore;
 
@@ -10,7 +10,7 @@ public class MiningNode : MonoBehaviour {
 	public int hp { get; private set;}
 	public int oreQuantity { get; private set;}
 
-	public MiningNode (int hp) {
+	public Node (int hp) {
 		maxhp = hp;
 		this.hp = hp;
 	}
@@ -22,13 +22,13 @@ public class MiningNode : MonoBehaviour {
 		Debug.Log (hp);
 	}
 
-	private void checkDeath() {
+	protected void checkDeath() {
 		if (hp <= 0) {
 			yieldResources ();
 		}
 	}
 
-	private void yieldResources() {
+	protected void yieldResources() {
 		for (int i = 0; i < oreQuantity; i++) {
 			Instantiate (ore, transform.position, Quaternion.identity);
 		}
@@ -46,7 +46,7 @@ public class MiningNode : MonoBehaviour {
 		setDesaturation (1f);
 	}
 
-	private void setDesaturation (float f) {
+	protected void setDesaturation (float f) {
 		this.GetComponent<Renderer> ().material.SetFloat ("_Desaturation", f);
 	}
 }

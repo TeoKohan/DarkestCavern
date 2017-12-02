@@ -4,22 +4,36 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-	public Pickaxe pickaxe { get; private set; }
-	public Lamp lamp { get; private set; }
-	private float movespeed;
+	public Pickaxe pickaxe { get; protected set; }
+	public Lamp lamp { get; protected set; }
+	public Bag bag { get; protected set; }
 
-	enum State {idle, walking, mining, locked}
-	State state;
+	protected float movespeed;
 
-	public void initialize() {
-		
+	protected enum State {idle, walking, mining, locked}
+	protected State state;
+	protected State previousState;
+
+	public void initialize (Pickaxe pickaxe, Lamp lamp, Bag bag, float movespeed) {
+		this.pickaxe = pickaxe;
+		this.lamp = lamp;
+		this.bag = bag;
+		this.movespeed = movespeed;
+
+		state = State.idle;
 	}
 
-	public void update () {
-		
+	void Start() {
+		GameManager.instance.setCharacter (this);
 	}
 
-	public void handleAction (Action action) {
+	public void update (CharacterInputData inputData) {
+		handleAction (inputData);
+	}
+
+	public void handleAction (CharacterInputData inputData) {
+
+		CharacterAction action = inputData.action;
 
 		//STATES
 		switch (state) {
@@ -28,13 +42,13 @@ public class Character : MonoBehaviour {
 		case State.idle:
 			
 			switch (action) {
-			case Action.action:
-				state = State.mining;
+			case CharacterAction.action:
+				changeState (State.mining);
 				attemptMining ();
 				break;
-			case Action.move:
-				state = State.walking;
-				move ();
+			case CharacterAction.move:
+				changeState (State.walking);
+				move (inputData.movement);
 				break;
 			}
 			break;
@@ -43,15 +57,16 @@ public class Character : MonoBehaviour {
 		case State.walking:
 			
 			switch (action) {
-			case Action.idle:
-				state = State.idle;
+			case CharacterAction.idle:
+				changeState (State.idle);
 				break;
-			case Action.action:
-				state = State.mining;
+			case CharacterAction.action:
+				changeState (State.mining);
 				attemptMining ();
 				break;
-			case Action.move:
-				move ();
+			case CharacterAction.move:
+				changeState (State.walking);
+				move (inputData.movement);
 				break;
 			}
 			break;
@@ -60,8 +75,8 @@ public class Character : MonoBehaviour {
 		case State.mining:
 			
 			switch (action) {
-			case Action.finish_action:
-				state = State.idle;
+			case CharacterAction.finish_action:
+				changeState (State.idle);
 				finishMining ();
 				break;
 			}
@@ -77,27 +92,35 @@ public class Character : MonoBehaviour {
 		}
 	}
 
-	private void move() {
+	protected void changeState(State newState) {
+		previousState = state;
+		state = newState;
+	}
+
+	protected void restorePreviousState() {
+		State temp = previousState;
+		previousState = state;
+		state = temp;
+	}
+
+	protected void move(float xMovement) {
+		Vector3 movement = new Vector3 (xMovement, 0, 0);
+		transform.Translate (movement * movespeed * Time.deltaTime, Space.World);
+	}
+
+	protected void attemptMining() {
+		//GameManager.instance;
+	}
+
+	protected void finishMining() {
 		
 	}
 
-	private void attemptMining() {
-		
+	protected void pause() {
+		changeState (State.locked);
 	}
 
-	private void finishMining() {
-
-	}
-
-	private void pause() {
-		
-	}
-
-	private void pauseError() {
-
-	}
-
-	private void mute() {
-
+	protected void unpause() {
+		restorePreviousState ();
 	}
 }

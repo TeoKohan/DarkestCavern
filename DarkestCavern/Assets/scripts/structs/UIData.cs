@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public struct UIData {
+﻿public struct UIData {
 	int gold;
 	float light;
 

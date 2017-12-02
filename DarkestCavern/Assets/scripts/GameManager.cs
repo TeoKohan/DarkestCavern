@@ -4,28 +4,45 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-	public GameManager instance { get; private set;}
+	public static GameManager instance { get; private set;}
+	public bool paused { get; private set;}
 	public InputManager inputManager { get; private set;}
 	public UIManager uiManager { get; private set;}
+	public SoundManager soundManager { get; private set;}
 	public Character currentCharacter { get; private set;}
-
-	public int[] ores { get; private set;}
 
 	void Awake () {
 		instance = this;
+		paused = false;
 		inputManager = new InputManager ();
-		uiManager = new UIManager ();
-
-		int oreTypes = System.Enum.GetNames (typeof(Ore)).Length;
-		ores = new int[oreTypes];
+		uiManager = gameObject.AddComponent (typeof(UIManager)) as UIManager;
+		soundManager = gameObject.AddComponent (typeof(SoundManager)) as SoundManager;
 	}
 
 	void Update() {
-		inputManager.handleInput ();
+		
+		CharacterInputData inputData = inputManager.characterInput ();
 		uiManager.updateUI (new UIData());
+		currentCharacter.update (inputData);
 	}
 
-	public void pickupOre(Ore ore) {
-		ores [(int)ore]++;
+	private void handleInput(GameAction action) {
+		switch (action) {
+		case GameAction.pause:
+			pauseUnpause ();
+			break;
+		case GameAction.mute:
+			soundManager.muteUnmute ();
+			break;
+		}
+	}
+
+	private void pauseUnpause() {
+		//PAUSE UNPAUSE CODE
+	}
+
+	public void setCharacter(Character character) {
+		currentCharacter = character;
+		character.initialize (new Pickaxe(), new Lamp(), new Bag(), 5f);
 	}
 }

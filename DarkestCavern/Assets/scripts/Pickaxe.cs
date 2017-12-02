@@ -18,6 +18,11 @@ public class Pickaxe {
 		}
 	}
 
+	public Pickaxe () {
+		this.damage = 10;
+		this.minigame = new BasicMinigame ();
+	}
+
 	public Pickaxe (int damage, Minigame minigame) {
 		this.damage = damage;
 		this.minigame = minigame;

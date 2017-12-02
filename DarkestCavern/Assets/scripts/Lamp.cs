@@ -29,5 +29,14 @@ public class Lamp {
 		}
 	}
 
+	public Lamp () {
+		this.duration = 30f;
+		this.radius = 1f;
+	}
+
+	public Lamp (float duration, float radius) {
+		this.duration = duration;
+		this.radius = radius;
+	}
 
 }
