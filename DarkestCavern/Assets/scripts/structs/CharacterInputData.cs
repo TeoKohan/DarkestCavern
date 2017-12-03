@@ -1,10 +1,12 @@
 ﻿public struct CharacterInputData {
-	public CharacterAction action;
+	public CharacterAction characterAction;
+	public PickaxeAction pickaxeAction;
 	public float movement;
 
-	public CharacterInputData(CharacterAction action, float movement) {
+	public CharacterInputData(CharacterAction characterAction, PickaxeAction pickaxeAction, float movement) {
 
-		this.action = action;
+		this.characterAction = characterAction;
+		this.pickaxeAction = pickaxeAction;
 		this.movement = movement;
 	}
 }

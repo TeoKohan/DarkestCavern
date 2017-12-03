@@ -46,17 +46,11 @@ public class InputManager {
 
 	public CharacterInputData characterInput() {
 
-		CharacterAction action = handleCharacterAction (characterActions);
+		CharacterAction characterAction = handleCharacterAction (characterActions);
+		PickaxeAction pickaxeAction = handlePickaxeAction (pickaxeActions);
 		float movement = handleMotion ();
 
-		return new CharacterInputData (action, movement);
-	}
-
-	public PickaxeAction pickaxeInput() {
-
-		PickaxeAction action = handlePickaxeAction (pickaxeActions);
-
-		return action;
+		return new CharacterInputData (characterAction, pickaxeAction, movement);
 	}
 
 	private GameAction handleGameAction(Dictionary<KeyCode, GameAction> actions) {
@@ -90,7 +84,7 @@ public class InputManager {
 	private PickaxeAction handlePickaxeAction(Dictionary<KeyCode, PickaxeAction> actions) {
 
 		foreach (KeyCode K in actions.Keys) {
-			if (Input.GetKey (K)) {
+			if (Input.GetKeyDown (K)) {
 
 				PickaxeAction action;
 				actions.TryGetValue(K, out action);

@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Zone {
-	public List<Node> nodes;
-
-	public Zone (List<Node> nodes) {
-		this.nodes = nodes;
-	}
+public class Zone : MonoBehaviour {
+	public Node[] nodes;
 }

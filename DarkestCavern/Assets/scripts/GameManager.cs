@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour {
 	public UIManager uiManager { get; private set;}
 	public SoundManager soundManager { get; private set;}
 	public Character currentCharacter { get; private set;}
-    public float DistToMine;
 
     void Awake () {
+		
 		instance = this;
 		paused = false;
 		inputManager = new InputManager ();
@@ -43,15 +43,19 @@ public class GameManager : MonoBehaviour {
 		//PAUSE UNPAUSE CODE
 	}
 
-    private bool canMine()
-    {
-        return zones.Any(x =>
-                    x.nodes.Any(z => Vector3.Distance(currentCharacter.transform.position, z.transform.position) <= DistToMine));
-    }
+	public Node getNode(int zone) {
+		
+		foreach (Node N in zones[zone].nodes) {
+			if (Mathf.Abs (currentCharacter.transform.position.x - N.transform.position.x) <= currentCharacter.pickaxe.range) {
+				return N;
+			}
+		}
+
+		return null;
+	}
 
 	public void setCharacter(Character character) {
 		currentCharacter = character;
 		character.initialize (new Pickaxe(), new Lamp(), new Bag(), 5f);
-        character.onMining += canMine;
     }
 }

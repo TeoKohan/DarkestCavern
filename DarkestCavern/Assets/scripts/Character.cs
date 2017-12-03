@@ -34,15 +34,16 @@ public class Character : MonoBehaviour {
 
 	public void handleAction (CharacterInputData inputData) {
 
-		CharacterAction action = inputData.action;
+		CharacterAction characterAction = inputData.characterAction;
+		PickaxeAction pickaxeAction = inputData.pickaxeAction;
 
 		//STATES
 		switch (state) {
 
 		//IDLE STATE
 		case State.idle:
-			
-			switch (action) {
+
+			switch (characterAction) {
 			case CharacterAction.action:
 				changeState (State.mining);
 				attemptMining ();
@@ -54,10 +55,10 @@ public class Character : MonoBehaviour {
 			}
 			break;
 
-		//WALKING STATE
+			//WALKING STATE
 		case State.walking:
-			
-			switch (action) {
+
+			switch (characterAction) {
 			case CharacterAction.idle:
 				changeState (State.idle);
 				break;
@@ -72,24 +73,18 @@ public class Character : MonoBehaviour {
 			}
 			break;
 
-		//MINING STATE
+			//MINING STATE
 		case State.mining:
-			
-			switch (action) {
-			case CharacterAction.finish_action:
-				changeState (State.idle);
-				finishMining ();
-				break;
-			}
+			pickaxe.minigame.handleInput (pickaxeAction);
 			break;
 
-		//LOCKED STATE
+			//LOCKED STATE
 		case State.locked:
 			break;
 
 		default:
 			break;
-		
+
 		}
 	}
 
@@ -110,11 +105,19 @@ public class Character : MonoBehaviour {
 	}
 
 	protected void attemptMining() {
-        onMining();
+		
+		Node n;
+		n = GameManager.instance.getNode (0);
+		if (n != null) {
+			pickaxe.startMinigame (this, n);
+		} 
+		else {
+			finishMining ();
+		}
     }
 
-	protected void finishMining() {
-		
+	public void finishMining() {
+		changeState (State.idle);
 	}
 
 	protected void pause() {
