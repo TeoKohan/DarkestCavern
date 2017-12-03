@@ -30,6 +30,7 @@ public class Character : MonoBehaviour {
 
 		zone = 0;
 		state = State.idle;
+		lamp.setEndTime ();
 	}
 
 	void Start() {
@@ -49,10 +50,10 @@ public class Character : MonoBehaviour {
 			sprite.sprite = idle[(int)(Time.time * 4 % idle.Length)];
 			break;
 		case State.walking:
-			sprite.sprite = walk[(int)(Time.time * 4 % walk.Length)];
+			sprite.sprite = walk[(int)(Time.time * 6 % walk.Length)];
 			break;
 		case State.mining:
-			sprite.sprite = mine[(int)(Time.time * 4 % mine.Length)];
+			sprite.sprite = mine[(int)(Time.time * 3 % mine.Length)];
 			break;
 		}
 	}

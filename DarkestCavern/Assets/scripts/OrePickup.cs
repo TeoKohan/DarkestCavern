@@ -22,8 +22,8 @@ public class OrePickup : MonoBehaviour {
 
 		GameManager.instance.ores.Add (this);
 
-		motion = new Vector3 (Random.Range(-maxHeight, maxHeight), Random.Range(maxHeight/2f, maxHeight), 0f);
-		Invoke ("activate", 2f);
+		motion = new Vector3 (Random.Range(-maxHeight/4f, maxHeight/4f), Random.Range(maxHeight/2f, maxHeight), 0f);
+		Invoke ("activate", 1f);
 	}
 
 	void Update() {

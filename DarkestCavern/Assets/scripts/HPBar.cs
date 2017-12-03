@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class HPBar : MonoBehaviour {
 
+	public float border;
 	public Image frame;
 	public Image backdrop;
 	public Image healthbar;
@@ -17,13 +18,20 @@ public class HPBar : MonoBehaviour {
 	}
 
 	public void updatePercentage(float percentage) {
-		healthbar.rectTransform.sizeDelta = new Vector2(percentage / 100f, 0.25f);
+		healthbar.rectTransform.localScale = new Vector2(percentage / 100f, 1f);
 		if (percentage >= 100f || percentage <= 0f) {
 			hide ();
 		} 
 		else {
 			show ();
 		}
+	}
+
+	public void setSize(Vector2 scale) {
+		Debug.Log ("HEEEEEY" + scale);
+		frame.rectTransform.sizeDelta = new Vector2(scale.x, scale.y);
+		backdrop.rectTransform.sizeDelta = new Vector2(scale.x - border, scale.y - border);
+		healthbar.rectTransform.sizeDelta = new Vector2(scale.x - border, scale.y - border);
 	}
 
 	public void hide() {

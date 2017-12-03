@@ -27,6 +27,10 @@ public class GameManager : MonoBehaviour {
 		}
 		ores = new List<OrePickup> ();
 	}
+		
+
+	public void blackout() {
+	}
 
 	void Update() {
 		

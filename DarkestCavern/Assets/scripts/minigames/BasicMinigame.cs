@@ -25,8 +25,6 @@ public class BasicMinigame : Minigame {
 
 	public override void start (int keys, Character character, Node node) {
 
-		keys = 11;
-
 		this.character = character;
 		this.node = node;
 

@@ -5,11 +5,18 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
+	public Material screenBlack;
+	public Transform helmet;
+
 	public Image[] prompts;
 	public Sprite[] buttons;
 
 	public Image[] ores;
 	public Text[] oreQuantity;
+
+	public Image lampIcon;
+	public Sprite[] lampStates;
+	public HPBar lamp;
 
 	private Dictionary<PickaxeAction, Sprite> sprites;
 
@@ -25,6 +32,27 @@ public class UIManager : MonoBehaviour {
 				oreQuantity [i].gameObject.SetActive (true);
 			}
 		}
+
+		float p = GameManager.instance.currentCharacter.lamp.getLightPercentage ();
+		if (p <= 0f) {
+			GameManager.instance.blackout ();
+		}
+
+		else {
+			if (p > 0.666f) {
+				lampIcon.sprite = lampStates [0];
+			} 
+			else if (p > 0.333f) {
+				lampIcon.sprite = lampStates [1];
+			}
+			else {
+				lampIcon.sprite = lampStates [2];
+			}
+			lamp.updatePercentage (p * 100);
+		}
+
+		screenBlack.SetVector ("_LightPosition", new Vector4( helmet.position.x, helmet.position.y, 0, 0));
+		screenBlack.SetFloat ("_Power", p);
 	}
 
 	public void Start() {
@@ -37,7 +65,6 @@ public class UIManager : MonoBehaviour {
 		sprites.Add (PickaxeAction.spacebar, buttons[4]);
 		hideButtons();
 	}
-
 
 	public void showButtons(PickaxeAction[] actions) {
 		int n = Mathf.Clamp (actions.Length, 0, 12);
@@ -54,7 +81,7 @@ public class UIManager : MonoBehaviour {
 
 		if (n <= 6) {
 			for (int i = 0; i < n; i++) {
-				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (float)n / 2f) * spacing, 0);
+				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (float)n / 2f + 0.5f) * spacing, 0);
 			}
 		}
 		else if (n % 2 == 0) {

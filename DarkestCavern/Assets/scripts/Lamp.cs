@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Lamp {
-	
+
+	public float endTime;
+	private float startTime;
+
 	protected float _duration;
 	protected float _radius;
 
@@ -14,7 +17,8 @@ public class Lamp {
 		}
 
 		set {
-			_duration = Mathf.Clamp (value, 30f, 300f);
+			_duration = Mathf.Clamp (value, 10f, 300f);
+			GameManager.instance.uiManager.lamp.setSize (new Vector2 (300f * (duration/30f), 50f));
 		}
 	}
 
@@ -37,6 +41,15 @@ public class Lamp {
 	public Lamp (float duration, float radius) {
 		this.duration = duration;
 		this.radius = radius;
+	}
+
+	public void setEndTime() {
+		startTime = Time.time;
+		endTime = startTime + duration;
+	}
+
+	public float getLightPercentage() {
+		return (endTime - (Time.time - startTime)) / duration;
 	}
 
 }

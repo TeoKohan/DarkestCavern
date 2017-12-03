@@ -1,17 +1,24 @@
 fileFormatVersion: 2
 guid: b03750aabf1d774468c22fbbbcaff867
-timeCreated: 1512326678
+timeCreated: 1512338140
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: character_idle
-    21300002: character_sheet_1
-    21300004: character_sheet_2
-    21300006: character_sheet_3
+    21300002: character_mine_01
+    21300004: character_mine_02
+    21300006: character_mine_03
     21300008: character_walk_00
     21300010: character_walk_01
     21300012: character_walk_02
     21300014: character_walk_03
+    21300016: character_sheet_4
+    21300018: character_sheet_5
+    21300020: character_walk_04
+    21300022: character_walk_05
+    21300024: character_walk_06
+    21300026: character_walk_07
+    21300028: character_walk_08
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -103,13 +110,13 @@ TextureImporter:
         width: 256
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: character_sheet_1
+      name: character_mine_01
       rect:
         serializedVersion: 2
         x: 256
@@ -117,49 +124,63 @@ TextureImporter:
         width: 256
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: character_sheet_2
+      name: character_mine_02
       rect:
         serializedVersion: 2
         x: 512
         y: 512
-        width: 256
+        width: 285
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: character_sheet_3
+      name: character_mine_03
       rect:
         serializedVersion: 2
-        x: 768
+        x: 794
+        y: 527
+        width: 261
+        height: 497
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: character_sheet_4
+      rect:
+        serializedVersion: 2
+        x: 1024
         y: 512
         width: 256
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: character_walk_00
+      name: character_sheet_5
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 1792
+        y: 512
         width: 256
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -168,12 +189,12 @@ TextureImporter:
       name: character_walk_01
       rect:
         serializedVersion: 2
-        x: 256
+        x: 0
         y: 0
         width: 256
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -182,12 +203,12 @@ TextureImporter:
       name: character_walk_02
       rect:
         serializedVersion: 2
-        x: 512
+        x: 256
         y: 0
         width: 256
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -196,12 +217,82 @@ TextureImporter:
       name: character_walk_03
       rect:
         serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: character_walk_04
+      rect:
+        serializedVersion: 2
         x: 768
         y: 0
         width: 256
         height: 512
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: character_walk_05
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3
+        width: 256
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: character_walk_06
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 256
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: character_walk_07
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 256
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: character_walk_08
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 256
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
