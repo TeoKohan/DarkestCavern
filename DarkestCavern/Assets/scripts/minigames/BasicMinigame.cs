@@ -25,6 +25,8 @@ public class BasicMinigame : Minigame {
 
 	public override void start (int keys, Character character, Node node) {
 
+		keys += 3;
+
 		this.character = character;
 		this.node = node;
 
@@ -37,22 +39,18 @@ public class BasicMinigame : Minigame {
 	}
 		
 	protected void displayKeys() {
-		//Display Keys through UI
-		Debug.Log(keyList[currentKey].ToString());
+		GameManager.instance.uiManager.showButtons (keyList);
 	}
 
 	public override void handleInput(PickaxeAction action) {
 		if (action != PickaxeAction.idle) {
 			if (action == keyList [currentKey]) {
 				currentKey++;
-				Debug.Log (keyList [currentKey].ToString ());
-				if (currentKey >= keyList.Length - 1) {
+				if (currentKey >= keyList.Length) {
 					finish ();
 				}
 			}
-			Debug.Log(keyList[currentKey].ToString());
 		} 
-
 	}
 
 	public override bool finish() {
@@ -61,7 +59,7 @@ public class BasicMinigame : Minigame {
 		//UNLOCK CHARACTER
 		node.damage(10);
 		character.finishMining();
-		Debug.Log("Finish");
+		GameManager.instance.uiManager.hideButtons ();
 		return true;
 	}
 }

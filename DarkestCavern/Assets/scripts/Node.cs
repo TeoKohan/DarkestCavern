@@ -14,6 +14,7 @@ public class Node : MonoBehaviour {
 
 	public void activate() {
 		active = true;
+		hp = maxhp;
 	}
 
 	public void damage (int damage) {
@@ -21,7 +22,6 @@ public class Node : MonoBehaviour {
 			hp -= damage;
 			hp = Mathf.Clamp (hp, 0, maxhp);
 			checkDeath ();
-			Debug.Log (hp);
 		}
 	}
 
@@ -44,7 +44,6 @@ public class Node : MonoBehaviour {
 		float startTime = Time.time;
 		while (Time.time - startTime < seconds) {
 			setDesaturation (Mathf.Clamp01((Time.time - startTime) / seconds));
-			Debug.Log (Mathf.Clamp01((Time.time - startTime) / seconds));
 			yield return null;
 		}
 		setDesaturation (1f);

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class OrePickup : MonoBehaviour {
 
+	public Ore type;
+
 	public float friction = 0.01f;
 	public float gravity = 2f;
 	public float maxHeight = 5f;
@@ -15,7 +17,9 @@ public class OrePickup : MonoBehaviour {
 	private bool active = false;
 
 	void Start () {
-		
+
+		GameManager.instance.ores.Add (this);
+
 		motion = new Vector3 (Random.Range(-maxHeight/2f, maxHeight/2f), Random.Range(maxHeight/2f, maxHeight), 0f);
 		Invoke ("activate", 2f);
 	}
@@ -38,6 +42,14 @@ public class OrePickup : MonoBehaviour {
 		transform.position = new Vector3 (x, y, 0f);
 	}
 
+	public void pickup() {
+		if (active) {
+			GameManager.instance.currentCharacter.bag.addOre (type, 1);
+			GameManager.instance.ores.Remove (this);
+			Destroy (gameObject);
+		}
+	}
+		
 	private void activate() {
 		active = true;
 	}
@@ -57,7 +69,6 @@ public class OrePickup : MonoBehaviour {
 			bounces--;
 			return Mathf.Max(y, radius);
 		}
-
 		return transform.position.y + motion.y * Time.deltaTime;
 	}
 }

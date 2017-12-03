@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour {
 		sprites.Add (PickaxeAction.up_arrow, buttons[1]);
 		sprites.Add (PickaxeAction.right_arrow, buttons[2]);
 		sprites.Add (PickaxeAction.down_arrow, buttons[3]);
+		sprites.Add (PickaxeAction.spacebar, buttons[4]);
 		hideButtons();
 	}
 
@@ -37,23 +38,23 @@ public class UIManager : MonoBehaviour {
 
 		if (n <= 6) {
 			for (int i = 0; i < n; i++) {
-				prompts [i].rectTransform.position = new Vector3 ((i - n / 2 + 0.5f * n % 2) * 100, 0, 0);
+				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - n / 2 + 0.5f * n % 2) * 150, 0);
 			}
 		}
 		else if (n % 2 == 0) {
-			for (int i = 0; i < n / 2 + 1; i++) {
-				prompts [i].rectTransform.position = new Vector3 ((i - n / 2 + 1) * 100, 100, 0);
+			for (int i = 0; i < n / 2; i++) {
+				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (n / 4 - 0.5f)) * 150, 150);
 			}
-			for (int i = n / 2 + 1; i < n; i++) {
-				prompts [i].rectTransform.position = new Vector3 ((i - n / 2) * 100, 0, 0);
+			for (int i = n / 2; i < n; i++) {
+				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (n * 3 / 4 - 0.5f)) * 150, 0);
 			}
 		} 
 		else {
 			for (int i = 0; i < n / 2; i++) {
-				prompts [i].rectTransform.position = new Vector3 ((i - n / 4) * 100, 100, 0);
+				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (n / 4 - 0.5f)) * 150, 150);
 			}
 			for (int i = n / 2; i < n; i++) {
-				prompts [i].rectTransform.position = new Vector3 ((i - n / 4) * 100, 0, 0);
+				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (n * 3 / 4)) * 150, 0);
 			}
 		}
 	}

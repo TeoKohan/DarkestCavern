@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     public Zone[] zones; 
+	public List<OrePickup> ores; 
 	public static GameManager instance { get; private set;}
 	public bool paused { get; private set;}
 	public InputManager inputManager { get; private set;}
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour {
 		foreach (Zone Z in zones) {
 			Z.activateNodes ();
 		}
+		ores = new List<OrePickup> ();
 	}
 
 	void Update() {
@@ -29,6 +31,23 @@ public class GameManager : MonoBehaviour {
 		CharacterInputData inputData = inputManager.characterInput ();
 		uiManager.updateUI (new UIData());
 		currentCharacter.update (inputData);
+		checkPickups ();
+	}
+
+	private void checkPickups() {
+
+		OrePickup temp = null;
+
+		foreach (OrePickup OP in ores) {
+			if (Mathf.Abs(currentCharacter.transform.position.x - OP.transform.position.x) < 1f) {
+				temp = OP;
+				break;
+			}
+		}
+
+		if (temp != null) {
+			temp.pickup ();
+		}
 	}
 
 	private void handleInput(GameAction action) {
