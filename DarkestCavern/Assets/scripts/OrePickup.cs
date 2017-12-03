@@ -12,20 +12,34 @@ public class OrePickup : MonoBehaviour {
 	public float radius = 1f;
 
 	private Vector3 motion;
+	private bool active = false;
 
 	void Start () {
 		
 		motion = new Vector3 (Random.Range(-maxHeight/2f, maxHeight/2f), Random.Range(maxHeight/2f, maxHeight), 0f);
-		Debug.Log (motion);
+		Invoke ("activate", 2f);
 	}
 
 	void Update() {
-		Debug.Log ("updatoo");
+		
 		applyFriction ();
 		applyGravity ();
 		float x = transform.position.x + motion.x * Time.deltaTime;
-		float y = checkBounces ();
+		float y;
+
+		if (bounces > 0) {
+			y = checkBounces ();
+		} 
+
+		else {
+			y = radius;
+		}
+
 		transform.position = new Vector3 (x, y, 0f);
+	}
+
+	private void activate() {
+		active = true;
 	}
 
 	private void applyFriction() {
@@ -38,9 +52,10 @@ public class OrePickup : MonoBehaviour {
 
 	private float checkBounces() {
 		if (transform.position.y + motion.y * Time.deltaTime - radius < 0) {
-			float y = Mathf.Abs(motion.y * Time.deltaTime + transform.position.y - radius) * bounceStrength;
+			float y = Mathf.Abs(motion.y * Time.deltaTime + (transform.position.y + radius)) * bounceStrength;
 			motion = new Vector3(motion.x, Mathf.Abs(motion.y) * bounceStrength, 0);
-			return y;
+			bounces--;
+			return Mathf.Max(y, radius);
 		}
 
 		return transform.position.y + motion.y * Time.deltaTime;

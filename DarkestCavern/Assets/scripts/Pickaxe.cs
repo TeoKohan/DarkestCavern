@@ -6,7 +6,7 @@ public class Pickaxe {
 	
 	public Minigame minigame;
 	protected int _damage;
-	protected int _range;
+	protected float _range;
 
 	public int damage {
 
@@ -19,21 +19,21 @@ public class Pickaxe {
 		}
 	}
 
-	public int range {
+	public float range {
 
 		get {
 			return _range;
 		}
 
 		set {
-			_range = Mathf.Clamp (value, 5, 50);
+			_range = Mathf.Clamp (value, 0.25f, 5f);
 		}
 	}
 
 
 	public Pickaxe () {
 		this.damage = 10;
-		this.range = 10;
+		this.range = 0.5f;
 		this.minigame = new BasicMinigame ();
 	}
 

@@ -8,7 +8,6 @@ public class Character : MonoBehaviour {
 	public Pickaxe pickaxe { get; protected set; }
 	public Lamp lamp { get; protected set; }
 	public Bag bag { get; protected set; }
-    public event Func<bool> onMining;
 	protected float movespeed;
 
 	protected enum State {idle, walking, mining, locked}

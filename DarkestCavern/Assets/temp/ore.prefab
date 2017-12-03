@@ -96,9 +96,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   friction: 0.0025
-  gravity: 5
-  maxHeight: 1
-  bounces: 3
+  gravity: 3
+  maxHeight: 5
+  bounces: 5
   bounceStrength: 0.75
   radius: 0.1
 --- !u!135 &135993264203112070

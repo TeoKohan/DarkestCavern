@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance { get; private set;}
 	public bool paused { get; private set;}
 	public InputManager inputManager { get; private set;}
-	public UIManager uiManager { get; private set;}
+	public UIManager uiManager;
 	public SoundManager soundManager { get; private set;}
 	public Character currentCharacter { get; private set;}
 
@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour {
 		instance = this;
 		paused = false;
 		inputManager = new InputManager ();
-		uiManager = gameObject.AddComponent (typeof(UIManager)) as UIManager;
 		soundManager = gameObject.AddComponent (typeof(SoundManager)) as SoundManager;
 
 		foreach (Zone Z in zones) {
