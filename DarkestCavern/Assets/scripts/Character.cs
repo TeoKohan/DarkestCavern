@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
+	public Sprite[] idle;
+	public Sprite[] walk;
+	public Sprite[] mine;
+
 	public Pickaxe pickaxe { get; protected set; }
 	public Lamp lamp { get; protected set; }
 	public Bag bag { get; protected set; }
@@ -14,6 +18,8 @@ public class Character : MonoBehaviour {
 	protected enum State {idle, walking, mining, locked}
 	protected State state;
 	protected State previousState;
+
+	protected SpriteRenderer sprite;
 
 
 	public void initialize (Pickaxe pickaxe, Lamp lamp, Bag bag, float movespeed) {
@@ -28,13 +34,30 @@ public class Character : MonoBehaviour {
 
 	void Start() {
 		GameManager.instance.setCharacter (this);
+		sprite = gameObject.GetComponent<SpriteRenderer> ();
 	}
 
 	public void update (CharacterInputData inputData) {
 		handleAction (inputData);
+		updateGraphics();
 	}
 
-	public void handleAction (CharacterInputData inputData) {
+	protected void updateGraphics() {
+
+		switch (state) {
+		case State.idle:
+			sprite.sprite = idle[(int)(Time.time * 4 % idle.Length)];
+			break;
+		case State.walking:
+			sprite.sprite = walk[(int)(Time.time * 4 % walk.Length)];
+			break;
+		case State.mining:
+			sprite.sprite = mine[(int)(Time.time * 4 % mine.Length)];
+			break;
+		}
+	}
+
+	protected void handleAction (CharacterInputData inputData) {
 
 		CharacterAction characterAction = inputData.characterAction;
 		PickaxeAction pickaxeAction = inputData.pickaxeAction;
@@ -103,6 +126,16 @@ public class Character : MonoBehaviour {
 
 	protected void move(float xMovement) {
 
+		if (xMovement >= 0) {
+			Debug.Log ("right");
+			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
+		}
+
+		else {
+			Debug.Log ("left");
+			transform.localScale = new Vector3 (-0.5f, 0.5f, 0.5f);
+		}
+
 		float result = GameManager.instance.checkCollision (transform.position.x + xMovement * movespeed * Time.deltaTime);
 		transform.position = new Vector3(result, transform.position.y, transform.position.z);
 		checkZone ();
@@ -110,7 +143,6 @@ public class Character : MonoBehaviour {
 
 	protected void checkZone() {
 		int newZone = Mathf.Clamp((int)(transform.position.x + 9.5f) / 19, 0, 5);
-		Debug.Log (zone);
 		if (zone != newZone) {
 			zone = newZone;
 			GameManager.instance.changeZone (zone);

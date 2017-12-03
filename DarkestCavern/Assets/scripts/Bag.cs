@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Bag {
 
-	protected int _size;
-	protected int[] ores;
+	private int _size;
+	public int[] ores { get; protected set;}
 
 	public int size {
 
@@ -21,7 +21,7 @@ public class Bag {
 	public Bag () {
 
 		ores = new int[System.Enum.GetNames (typeof(Ore)).Length];
-		size = 5;
+		size = 10;
 	}
 
 	public int getOreQuantity(Ore ore) {
@@ -32,6 +32,7 @@ public class Bag {
 		int result = ores [(int)ore] + n;
 		if (result <= size) {
 			ores [(int)ore] = result;
+			Debug.Log (ore.ToString() + ores [(int)ore]);
 			return true;
 		} 
 

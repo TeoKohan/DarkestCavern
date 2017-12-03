@@ -1,9 +1,9 @@
 ﻿public struct UIData {
-	int gold;
-	float light;
+	public int[] ores;
+	public float light;
 
-	public UIData (int gold, float light) {
-		this.gold = gold;
+	public UIData (int[] ores, float light) {
+		this.ores = ores;
 		this.light = light;
 	}
 }

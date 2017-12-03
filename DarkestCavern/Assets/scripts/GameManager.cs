@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
 	void Update() {
 		
 		CharacterInputData inputData = inputManager.characterInput ();
-		uiManager.updateUI (new UIData());
+		uiManager.updateUI (new UIData(currentCharacter.bag.ores, 0));
 		currentCharacter.update (inputData);
 		checkPickups ();
 	}
@@ -87,6 +87,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public float checkCollision(float pos) {
+		if (pos <= -7f) {
+			return -7f;
+		}
 		foreach (Wall W in walls) {
 			if (pos > W.transform.position.x - W.radius && W.active) {
 				return W.transform.position.x - W.radius;
