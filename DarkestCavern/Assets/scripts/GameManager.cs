@@ -1,17 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
-
+    public Zone[] zones; 
 	public static GameManager instance { get; private set;}
 	public bool paused { get; private set;}
 	public InputManager inputManager { get; private set;}
 	public UIManager uiManager { get; private set;}
 	public SoundManager soundManager { get; private set;}
 	public Character currentCharacter { get; private set;}
+    public float DistToMine;
 
-	void Awake () {
+    void Awake () {
 		instance = this;
 		paused = false;
 		inputManager = new InputManager ();
@@ -41,8 +43,15 @@ public class GameManager : MonoBehaviour {
 		//PAUSE UNPAUSE CODE
 	}
 
+    private bool canMine()
+    {
+        return zones.Any(x =>
+                    x.nodes.Any(z => Vector3.Distance(currentCharacter.transform.position, z.transform.position) <= DistToMine));
+    }
+
 	public void setCharacter(Character character) {
 		currentCharacter = character;
 		character.initialize (new Pickaxe(), new Lamp(), new Bag(), 5f);
-	}
+        character.onMining += canMine;
+    }
 }

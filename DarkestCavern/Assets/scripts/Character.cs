@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Character : MonoBehaviour {
@@ -7,7 +8,7 @@ public class Character : MonoBehaviour {
 	public Pickaxe pickaxe { get; protected set; }
 	public Lamp lamp { get; protected set; }
 	public Bag bag { get; protected set; }
-
+    public event Func<bool> onMining;
 	protected float movespeed;
 
 	protected enum State {idle, walking, mining, locked}
@@ -109,8 +110,8 @@ public class Character : MonoBehaviour {
 	}
 
 	protected void attemptMining() {
-		//GameManager.instance;
-	}
+        onMining();
+    }
 
 	protected void finishMining() {
 		
