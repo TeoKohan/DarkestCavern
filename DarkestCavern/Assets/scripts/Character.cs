@@ -8,11 +8,13 @@ public class Character : MonoBehaviour {
 	public Pickaxe pickaxe { get; protected set; }
 	public Lamp lamp { get; protected set; }
 	public Bag bag { get; protected set; }
+	public int zone { get; protected set; }
 	protected float movespeed;
 
 	protected enum State {idle, walking, mining, locked}
 	protected State state;
 	protected State previousState;
+
 
 	public void initialize (Pickaxe pickaxe, Lamp lamp, Bag bag, float movespeed) {
 		this.pickaxe = pickaxe;
@@ -20,6 +22,7 @@ public class Character : MonoBehaviour {
 		this.bag = bag;
 		this.movespeed = movespeed;
 
+		zone = 0;
 		state = State.idle;
 	}
 
@@ -99,8 +102,19 @@ public class Character : MonoBehaviour {
 	}
 
 	protected void move(float xMovement) {
-		Vector3 movement = new Vector3 (xMovement, 0, 0);
-		transform.Translate (movement * movespeed * Time.deltaTime, Space.World);
+
+		float result = GameManager.instance.checkCollision (transform.position.x + xMovement * movespeed * Time.deltaTime);
+		transform.position = new Vector3(result, transform.position.y, transform.position.z);
+		checkZone ();
+	}
+
+	protected void checkZone() {
+		int newZone = Mathf.Clamp((int)(transform.position.x + 9.5f) / 19, 0, 5);
+		Debug.Log (zone);
+		if (zone != newZone) {
+			zone = newZone;
+			GameManager.instance.changeZone (zone);
+		}
 	}
 
 	protected void attemptMining() {

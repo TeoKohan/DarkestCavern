@@ -46,7 +46,9 @@ public class BasicMinigame : Minigame {
 		if (action != PickaxeAction.idle) {
 			if (action == keyList [currentKey]) {
 				currentKey++;
+				node.damage(character.pickaxe.damage - node.armor);
 				if (currentKey >= keyList.Length) {
+					node.damage(character.pickaxe.damage * 5 - node.armor);
 					finish ();
 				}
 			}
@@ -57,7 +59,6 @@ public class BasicMinigame : Minigame {
 		//GameManager.instance;
 		//DAMAGE NODE
 		//UNLOCK CHARACTER
-		node.damage(10);
 		character.finishMining();
 		GameManager.instance.uiManager.hideButtons ();
 		return true;

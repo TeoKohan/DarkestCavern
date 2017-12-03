@@ -6,8 +6,10 @@ public class Node : MonoBehaviour {
 
 	public GameObject ore;
 
+	public HPBar hpbar;
 	public int maxhp;
 	public int hp { get; private set;}
+	public int armor;
 	public int oreQuantity;
 
 	public bool active { get; private set;}
@@ -21,6 +23,7 @@ public class Node : MonoBehaviour {
 		if (active) {
 			hp -= damage;
 			hp = Mathf.Clamp (hp, 0, maxhp);
+			hpbar.updatePercentage ((float)hp / (float)maxhp * 100f);
 			checkDeath ();
 		}
 	}
@@ -28,6 +31,7 @@ public class Node : MonoBehaviour {
 	protected void checkDeath() {
 		if (hp <= 0) {
 			yieldResources ();
+			GameManager.instance.currentCharacter.pickaxe.minigame.finish ();
 		}
 	}
 

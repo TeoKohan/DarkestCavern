@@ -33,7 +33,7 @@ public class Pickaxe {
 
 	public Pickaxe () {
 		this.damage = 10;
-		this.range = 0.5f;
+		this.range = 1f;
 		this.minigame = new BasicMinigame ();
 	}
 

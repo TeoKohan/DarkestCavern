@@ -4,7 +4,9 @@ using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
+	public Camera mainCamera;
     public Zone[] zones; 
+	public Wall[] walls;
 	public List<OrePickup> ores; 
 	public static GameManager instance { get; private set;}
 	public bool paused { get; private set;}
@@ -32,6 +34,25 @@ public class GameManager : MonoBehaviour {
 		uiManager.updateUI (new UIData());
 		currentCharacter.update (inputData);
 		checkPickups ();
+	}
+
+	public void changeZone(int zone) {
+		Debug.Log ("change");
+		StartCoroutine (moveCamera(0.5f, zone));
+	}
+
+	IEnumerator moveCamera(float seconds, int zone) {
+
+		Vector3 origin = new Vector3 (mainCamera.transform.position.x, 3, -10);
+		Vector3 target = new Vector3 (zone * 19, 3, -10);
+
+		float startTime = Time.time;
+		while (Time.time - startTime < seconds) {
+			float t = (Mathf.Clamp01((Time.time - startTime) / seconds));
+			mainCamera.transform.position = Vector3.Slerp (origin, target, t);
+			yield return null;
+		}
+		mainCamera.transform.position = target;
 	}
 
 	private void checkPickups() {
@@ -64,6 +85,17 @@ public class GameManager : MonoBehaviour {
 	private void pauseUnpause() {
 		//PAUSE UNPAUSE CODE
 	}
+
+	public float checkCollision(float pos) {
+		foreach (Wall W in walls) {
+			if (pos > W.transform.position.x - W.radius && W.active) {
+				return W.transform.position.x - W.radius;
+			}
+		}
+
+		return pos;
+	}
+
 
 	public Node getNode(int zone) {
 		
