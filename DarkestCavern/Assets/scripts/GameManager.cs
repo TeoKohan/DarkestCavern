@@ -19,6 +19,10 @@ public class GameManager : MonoBehaviour {
 		inputManager = new InputManager ();
 		uiManager = gameObject.AddComponent (typeof(UIManager)) as UIManager;
 		soundManager = gameObject.AddComponent (typeof(SoundManager)) as SoundManager;
+
+		foreach (Zone Z in zones) {
+			Z.activateNodes ();
+		}
 	}
 
 	void Update() {
@@ -46,8 +50,10 @@ public class GameManager : MonoBehaviour {
 	public Node getNode(int zone) {
 		
 		foreach (Node N in zones[zone].nodes) {
-			if (Mathf.Abs (currentCharacter.transform.position.x - N.transform.position.x) <= currentCharacter.pickaxe.range) {
-				return N;
+			if (N.active) {
+				if (Mathf.Abs (currentCharacter.transform.position.x - N.transform.position.x) <= currentCharacter.pickaxe.range) {
+					return N;
+				}
 			}
 		}
 

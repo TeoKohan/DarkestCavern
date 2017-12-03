@@ -6,20 +6,23 @@ public class Node : MonoBehaviour {
 
 	public GameObject ore;
 
-	public int maxhp { get; private set;}
+	public int maxhp;
 	public int hp { get; private set;}
-	public int oreQuantity { get; private set;}
+	public int oreQuantity;
 
-	public Node (int hp) {
-		maxhp = hp;
-		this.hp = hp;
+	public bool active { get; private set;}
+
+	public void activate() {
+		active = true;
 	}
 
 	public void damage (int damage) {
-		hp -= damage;
-		hp = Mathf.Clamp (hp, 0, maxhp);
-		checkDeath ();
-		Debug.Log (hp);
+		if (active) {
+			hp -= damage;
+			hp = Mathf.Clamp (hp, 0, maxhp);
+			checkDeath ();
+			Debug.Log (hp);
+		}
 	}
 
 	protected void checkDeath() {
@@ -32,6 +35,7 @@ public class Node : MonoBehaviour {
 		for (int i = 0; i < oreQuantity; i++) {
 			Instantiate (ore, transform.position, Quaternion.identity);
 		}
+		active = false;
 		StartCoroutine (fade (1));
 	}
 

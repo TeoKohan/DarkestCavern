@@ -383,7 +383,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a2fcf504f9e0b74ebe2e527166f0087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ore: {fileID: 0}
+  ore: {fileID: 1295634339351198, guid: d04f0d5cedb41974fa715b701bc5fb54, type: 2}
+  maxhp: 100
+  oreQuantity: 3
 --- !u!23 &1026270516
 MeshRenderer:
   m_ObjectHideFlags: 0
