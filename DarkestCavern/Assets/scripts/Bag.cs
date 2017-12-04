@@ -4,35 +4,27 @@ using UnityEngine;
 
 public class Bag {
 
-	private int _size;
-	public int[] ores { get; protected set;}
+	const int baseSize = 10;
 
-	public int size {
-
-		get {
-			return _size;
-		}
-
-		set {
-			_size = Mathf.Clamp (value, 1, 100);
-		}
-	}
+	public int size { get; protected set;}
+	protected Dictionary<Ore, int> ores;
 
 	public Bag () {
 
-		ores = new int[System.Enum.GetNames (typeof(Ore)).Length];
-		size = 10;
+		ores = new Dictionary<Ore, int> ();
+		size = baseSize;
 	}
 
-	public int getOreQuantity(Ore ore) {
-		return ores [(int)ore];
+	public int getOre (Ore ore) {
+		return ores [ore];
 	}
 
-	public bool addOre(Ore ore, int n){
-		int result = ores [(int)ore] + n;
+	public bool addOre(Ore ore, int number){
+		
+		int result = ores [ore] + number;
+
 		if (result <= size) {
-			ores [(int)ore] = result;
-			Debug.Log (ore.ToString() + ores [(int)ore]);
+			ores [ore] = result;
 			return true;
 		} 
 
@@ -42,9 +34,9 @@ public class Bag {
 	}
 
 	public bool subtractOre(Ore ore, int n){
-		int result = ores [(int)ore] - n;
+		int result = ores [ore] - n;
 		if (result >= 0) {
-			ores [(int)ore] = result;
+			ores [ore] = result;
 			return true;
 		} 
 

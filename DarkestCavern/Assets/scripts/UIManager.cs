@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
+	public GameObject UI;
+
 	public Material screenBlack;
 	public Transform helmet;
 
@@ -18,9 +20,14 @@ public class UIManager : MonoBehaviour {
 	public Sprite[] lampStates;
 	public HPBar lamp;
 
+	private GameManager gameManager;
 	private Dictionary<PickaxeAction, Sprite> sprites;
 
-	public void updateUI(UIData data) {
+	void Start () {
+		gameManager = GameManager.instance;
+	}
+
+	public void updateUI(Inventory inventory) {
 		for (int i = 0; i < oreQuantity.Length; i++) {
 			oreQuantity [i].text = data.ores [i].ToString() + " / " + GameManager.instance.currentCharacter.bag.size;
 			if (data.ores [i] <= 0) {
@@ -33,7 +40,7 @@ public class UIManager : MonoBehaviour {
 			}
 		}
 
-		float p = GameManager.instance.currentCharacter.lamp.getLightPercentage ();
+		float p = gameManager.currentCharacter.lamp.getLightPercentage ();
 		if (p <= 0f) {
 			GameManager.instance.blackout ();
 		}
@@ -51,12 +58,21 @@ public class UIManager : MonoBehaviour {
 			lamp.updatePercentage (p * 100);
 		}
 
-		screenBlack.SetVector ("_LightPosition", new Vector4( helmet.position.x, helmet.position.y, 0, 0));
+		Vector3 h = Camera.main.WorldToScreenPoint (helmet.position);
+		h = Camera.main.ScreenToWorldPoint(new Vector3(h.x, h.y, 4.5f));
+		screenBlack.SetVector ("_LightPosition", h);
 		screenBlack.SetFloat ("_Power", p);
 	}
 
+	public void camp() {
+		hideButtons ();
+		hideLight ();
+	}
+
 	public void Start() {
-		
+
+		DontDestroyOnLoad (UI);
+
 		sprites = new Dictionary<PickaxeAction, Sprite> ();
 		sprites.Add (PickaxeAction.left_arrow, buttons[0]);
 		sprites.Add (PickaxeAction.up_arrow, buttons[1]);
@@ -64,6 +80,11 @@ public class UIManager : MonoBehaviour {
 		sprites.Add (PickaxeAction.down_arrow, buttons[3]);
 		sprites.Add (PickaxeAction.spacebar, buttons[4]);
 		hideButtons();
+	}
+
+	public void hideLight() {
+		lamp.hide ();
+		lampIcon.gameObject.SetActive (false);
 	}
 
 	public void showButtons(PickaxeAction[] actions) {
@@ -84,6 +105,7 @@ public class UIManager : MonoBehaviour {
 				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (float)n / 2f + 0.5f) * spacing, 0);
 			}
 		}
+
 		else if (n % 2 == 0) {
 			for (int i = 0; i < n / 2; i++) {
 				prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (float)n / 4f + 0.5f) * spacing, spacing);
@@ -91,7 +113,8 @@ public class UIManager : MonoBehaviour {
 			for (int i = n / 2; i < n; i++) {
 						prompts [i].rectTransform.anchoredPosition = new Vector3 ((i - (float)n * 3f / 4f + 0.5f) * spacing, 0);
 			}
-		} 
+		}
+
 		else {
 			for (int i = 0; i < n / 2; i++) {
 				prompts [i].rectTransform.anchoredPosition = new Vector3 ( (i - (float)(n / 2) / 2f+ 0.5f) * spacing, spacing);

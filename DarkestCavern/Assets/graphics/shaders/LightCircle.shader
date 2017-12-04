@@ -9,10 +9,8 @@
 		LOD 200
 		
 		CGPROGRAM
-		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf Standard fullforwardshadows alpha:fade
+		#pragma surface surf Standard alpha:fade
 
-		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
 
 		float4 _LightPosition;
@@ -24,11 +22,7 @@
 			float3 worldPos;
 		};
 
-		// Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
-		// See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
-		// #pragma instancing_options assumeuniformscaling
 		UNITY_INSTANCING_CBUFFER_START(Props)
-			// put more per-instance properties here
 		UNITY_INSTANCING_CBUFFER_END
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
@@ -36,7 +30,7 @@
 			fixed4 c = _Color;
 			o.Albedo = c.rgb;
 			float2 d = abs(_LightPosition.xy - IN.worldPos.xy);
-			o.Alpha = max(pow(sqrt(d.x * d.x + d.y * d.y) / _Power / 10, _Power * 2), 1 - _Power + 0.25);
+			o.Alpha = min(pow(sqrt(d.x * d.x + d.y * d.y) / max(_Power, 0.025) / 5, 2), 1);
 		}
 		ENDCG
 	}

@@ -46,7 +46,7 @@ public class BasicMinigame : Minigame {
 				currentKey++;
 				node.damage(character.pickaxe.damage - node.armor);
 				if (currentKey >= keyList.Length) {
-					node.damage(character.pickaxe.damage * 5 - node.armor);
+					node.damage(character.pickaxe.damage * 2);
 					finish ();
 				}
 			}

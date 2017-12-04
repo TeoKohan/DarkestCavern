@@ -5,35 +5,50 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
 
-	public Sprite[] idle;
-	public Sprite[] walk;
-	public Sprite[] mine;
+	const float movespeed = 5f;
 
-	public Pickaxe pickaxe { get; protected set; }
-	public Lamp lamp { get; protected set; }
-	public Bag bag { get; protected set; }
-	public int zone { get; protected set; }
-	protected float movespeed;
+		public Sprite[] idle;
+		public Sprite[] walk;
+		public Sprite[] mine;
+
+		public GameObject helmetSprite;
+
+		public Vector3[] helmetIdlePositions;
+		public Vector3[] helmetWalkPositions;
+		public Vector3[] helmetMinePositions;
+
+		public GameObject pickaxeSprite;
+
+		public Vector3[] pickaxeIdlePositions;
+		public float[] pickaxeIdleRotations;
+		public Vector3[] pickaxeWalkPositions;
+		public float[] pickaxeWalkRotations;
+		public Vector3[] pickaxeMinePositions;
+		public float[] pickaxeMineRotations;
+
+	public Inventory inventory { get; protected set; }
+
+	protected int currentZone;
 
 	protected enum State {idle, walking, mining, locked}
 	protected State state;
 	protected State previousState;
 
+	protected GameManager gameManager;
 	protected SpriteRenderer sprite;
 
 
-	public void initialize (Pickaxe pickaxe, Lamp lamp, Bag bag, float movespeed) {
-		this.pickaxe = pickaxe;
-		this.lamp = lamp;
-		this.bag = bag;
-		this.movespeed = movespeed;
+	public void initialize (Inventory inventory) {
+		
+		this.inventory = inventory;
+		gameManager = GameManager.instance;
 
-		zone = 0;
+		currentZone = updateZone ();
 		state = State.idle;
-		lamp.setEndTime ();
 	}
 
 	void Start() {
+		
 		GameManager.instance.setCharacter (this);
 		sprite = gameObject.GetComponent<SpriteRenderer> ();
 	}
@@ -41,19 +56,29 @@ public class Character : MonoBehaviour {
 	public void update (CharacterInputData inputData) {
 		handleAction (inputData);
 		updateGraphics();
+		updateZone ();
 	}
 
 	protected void updateGraphics() {
 
 		switch (state) {
 		case State.idle:
-			sprite.sprite = idle[(int)(Time.time * 4 % idle.Length)];
+			sprite.sprite = idle [(int)(Time.time * 1 % idle.Length)];
+			helmetSprite.transform.localPosition = helmetIdlePositions [(int)(Time.time * 1 % helmetIdlePositions.Length)];
+			pickaxeSprite.transform.localPosition = pickaxeIdlePositions [(int)(Time.time * 1 % pickaxeIdlePositions.Length)];
+			pickaxeSprite.transform.rotation =Quaternion.Euler(0, 0, pickaxeIdleRotations [(int)(Time.time * 1 % pickaxeIdleRotations.Length)] * transform.localScale.x);
 			break;
 		case State.walking:
 			sprite.sprite = walk[(int)(Time.time * 6 % walk.Length)];
+			helmetSprite.transform.localPosition = helmetWalkPositions [(int)(Time.time * 6 % helmetWalkPositions.Length)];
+			pickaxeSprite.transform.localPosition = pickaxeWalkPositions [(int)(Time.time * 6 % pickaxeWalkPositions.Length)];
+			pickaxeSprite.transform.rotation = Quaternion.Euler(0, 0, pickaxeWalkRotations [(int)(Time.time * 6 % pickaxeWalkRotations.Length)] * transform.localScale.x);
 			break;
 		case State.mining:
 			sprite.sprite = mine[(int)(Time.time * 3 % mine.Length)];
+			helmetSprite.transform.localPosition = helmetMinePositions [(int)(Time.time * 3 % helmetMinePositions.Length)];
+			pickaxeSprite.transform.localPosition = pickaxeMinePositions [(int)(Time.time * 3 % pickaxeMinePositions.Length)];
+			pickaxeSprite.transform.rotation =Quaternion.Euler(0, 0, pickaxeMineRotations [(int)(Time.time * 3 % pickaxeMineRotations.Length)] * transform.localScale.x);
 			break;
 		}
 	}
@@ -101,7 +126,7 @@ public class Character : MonoBehaviour {
 
 			//MINING STATE
 		case State.mining:
-			pickaxe.minigame.handleInput (pickaxeAction);
+			//pickaxe.minigame.handleInput (pickaxeAction);
 			break;
 
 			//LOCKED STATE
@@ -128,34 +153,29 @@ public class Character : MonoBehaviour {
 	protected void move(float xMovement) {
 
 		if (xMovement >= 0) {
-			Debug.Log ("right");
 			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
 		}
 
 		else {
-			Debug.Log ("left");
 			transform.localScale = new Vector3 (-0.5f, 0.5f, 0.5f);
 		}
 
 		float result = GameManager.instance.checkCollision (transform.position.x + xMovement * movespeed * Time.deltaTime);
 		transform.position = new Vector3(result, transform.position.y, transform.position.z);
-		checkZone ();
 	}
 
-	protected void checkZone() {
-		int newZone = Mathf.Clamp((int)(transform.position.x + 9.5f) / 19, 0, 5);
-		if (zone != newZone) {
-			zone = newZone;
-			GameManager.instance.changeZone (zone);
-		}
+	protected int updateZone() {
+
+		//Reimplement if theres enough time
+		return Mathf.Clamp((int)(transform.position.x + 9.5f) / 19, 0, 5);
 	}
 
 	protected void attemptMining() {
 		
 		Node n;
-		n = GameManager.instance.getNode (0);
+		n = gameManager.getNode (0);
 		if (n != null) {
-			pickaxe.startMinigame (this, n);
+			//pickaxe.startMinigame (this, n);
 		} 
 		else {
 			finishMining ();

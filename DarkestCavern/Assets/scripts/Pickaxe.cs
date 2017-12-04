@@ -32,8 +32,8 @@ public class Pickaxe {
 
 
 	public Pickaxe () {
-		this.damage = 10;
-		this.range = 1f;
+		this.damage = 1;
+		this.range = 2f;
 		this.minigame = new BasicMinigame ();
 	}
 
@@ -43,6 +43,6 @@ public class Pickaxe {
 	}
 
 	public void startMinigame(Character c, Node n) {
-		minigame.start (4 + damage / 10, c, n);
+		minigame.start (2 + damage / 10, c, n);
 	}
 }

@@ -28,7 +28,6 @@ public class HPBar : MonoBehaviour {
 	}
 
 	public void setSize(Vector2 scale) {
-		Debug.Log ("HEEEEEY" + scale);
 		frame.rectTransform.sizeDelta = new Vector2(scale.x, scale.y);
 		backdrop.rectTransform.sizeDelta = new Vector2(scale.x - border, scale.y - border);
 		healthbar.rectTransform.sizeDelta = new Vector2(scale.x - border, scale.y - border);

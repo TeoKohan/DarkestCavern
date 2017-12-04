@@ -66,7 +66,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Power: 0.3149093
+    - _Power: 0.7940159
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -75,5 +75,5 @@ Material:
     m_Colors:
     - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightPosition: {r: 0.94242346, g: 2.2245, b: 0, a: 0}
+    - _LightPosition: {r: -0.76524615, g: 2.5767183, b: -5.5, a: 0}
     - _Position: {r: 0, g: 0, b: 0, a: 0}
