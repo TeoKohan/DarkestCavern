@@ -47,10 +47,9 @@ public class InputManager {
 	public CharacterInputData characterInput() {
 
 		CharacterAction characterAction = handleCharacterAction (characterActions);
-		PickaxeAction pickaxeAction = handlePickaxeAction (pickaxeActions);
 		float movement = handleMotion ();
 
-		return new CharacterInputData (characterAction, pickaxeAction, movement);
+		return new CharacterInputData (characterAction, movement);
 	}
 
 	private GameAction handleGameAction(Dictionary<KeyCode, GameAction> actions) {

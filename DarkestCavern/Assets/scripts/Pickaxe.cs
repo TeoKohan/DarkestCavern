@@ -3,33 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pickaxe {
-	
-	public Minigame minigame;
-	protected int _damage;
-	protected float _range;
 
-	public int damage {
 
-		get {
-			return _damage;
-		}
 
-		set {
-			_damage = Mathf.Clamp (value, 1, 100);
-		}
-	}
-
-	public float range {
-
-		get {
-			return _range;
-		}
-
-		set {
-			_range = Mathf.Clamp (value, 0.25f, 5f);
-		}
-	}
-
+	public Minigame minigame { get; protected set; }
+	public int damage { get; protected set; }
+	public float range { get; protected set; }
 
 	public Pickaxe () {
 		this.damage = 1;

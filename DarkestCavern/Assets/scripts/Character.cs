@@ -6,6 +6,7 @@ using UnityEngine;
 public class Character : MonoBehaviour {
 
 	const float movespeed = 5f;
+	const float pickUpDistance = 1f;
 
 		public Sprite[] idle;
 		public Sprite[] walk;
@@ -30,7 +31,9 @@ public class Character : MonoBehaviour {
 
 	protected int currentZone;
 
+	protected enum Facing {left, right}
 	protected enum State {idle, walking, mining, locked}
+	Facing facing;
 	protected State state;
 	protected State previousState;
 
@@ -43,7 +46,7 @@ public class Character : MonoBehaviour {
 		this.inventory = inventory;
 		gameManager = GameManager.instance;
 
-		currentZone = updateZone ();
+		updateZone ();
 		state = State.idle;
 	}
 
@@ -55,8 +58,9 @@ public class Character : MonoBehaviour {
 
 	public void update (CharacterInputData inputData) {
 		handleAction (inputData);
-		updateGraphics();
 		updateZone ();
+		checkPickups ();
+		updateGraphics();
 	}
 
 	protected void updateGraphics() {
@@ -69,10 +73,11 @@ public class Character : MonoBehaviour {
 			pickaxeSprite.transform.rotation =Quaternion.Euler(0, 0, pickaxeIdleRotations [(int)(Time.time * 1 % pickaxeIdleRotations.Length)] * transform.localScale.x);
 			break;
 		case State.walking:
-			sprite.sprite = walk[(int)(Time.time * 6 % walk.Length)];
+			sprite.sprite = walk [(int)(Time.time * 6 % walk.Length)];
 			helmetSprite.transform.localPosition = helmetWalkPositions [(int)(Time.time * 6 % helmetWalkPositions.Length)];
 			pickaxeSprite.transform.localPosition = pickaxeWalkPositions [(int)(Time.time * 6 % pickaxeWalkPositions.Length)];
-			pickaxeSprite.transform.rotation = Quaternion.Euler(0, 0, pickaxeWalkRotations [(int)(Time.time * 6 % pickaxeWalkRotations.Length)] * transform.localScale.x);
+			pickaxeSprite.transform.rotation = Quaternion.Euler (0, 0, pickaxeWalkRotations [(int)(Time.time * 6 % pickaxeWalkRotations.Length)] * transform.localScale.x);
+			setFacing (facing);
 			break;
 		case State.mining:
 			sprite.sprite = mine[(int)(Time.time * 3 % mine.Length)];
@@ -86,7 +91,6 @@ public class Character : MonoBehaviour {
 	protected void handleAction (CharacterInputData inputData) {
 
 		CharacterAction characterAction = inputData.characterAction;
-		PickaxeAction pickaxeAction = inputData.pickaxeAction;
 
 		//STATES
 		switch (state) {
@@ -126,7 +130,6 @@ public class Character : MonoBehaviour {
 
 			//MINING STATE
 		case State.mining:
-			//pickaxe.minigame.handleInput (pickaxeAction);
 			break;
 
 			//LOCKED STATE
@@ -150,31 +153,46 @@ public class Character : MonoBehaviour {
 		state = temp;
 	}
 
-	protected void move(float xMovement) {
+	protected void move(float movement) {
+		
+		if (movement >= 0) { facing = Facing.right;}
+		else { facing = Facing.left;}
 
-		if (xMovement >= 0) {
-			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
-		}
-
-		else {
-			transform.localScale = new Vector3 (-0.5f, 0.5f, 0.5f);
-		}
-
-		float result = GameManager.instance.checkCollision (transform.position.x + xMovement * movespeed * Time.deltaTime);
+		float result = Wall.checkCollision (transform.position.x + movement * movespeed * Time.deltaTime);
 		transform.position = new Vector3(result, transform.position.y, transform.position.z);
 	}
 
-	protected int updateZone() {
+	protected void setFacing(Facing facing) {
+		switch (facing) {
+		case Facing.right:
+			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
+			break;
+		case Facing.left:
+			transform.localScale = new Vector3 (-0.5f, 0.5f, 0.5f);
+			break;
+		default:
+			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
+			break;
+		}
+	}
+
+	protected void updateZone() {
 
 		//Reimplement if theres enough time
-		return Mathf.Clamp((int)(transform.position.x + 9.5f) / 19, 0, 5);
+		int newZone = Mathf.Clamp((int)(transform.position.x + 9.5f) / 19, 0, 5);
+		if (newZone != currentZone) {
+			currentZone = newZone;
+			gameManager.changeZone (newZone);
+		}
 	}
 
 	protected void attemptMining() {
-		
-		Node n;
-		n = gameManager.getNode (0);
-		if (n != null) {
+
+		Debug.Log ("att mine");
+		Node node = Node.getNode(transform.position, inventory.pickaxe.range);
+		Debug.Log (node);
+
+		if (node != null) {
 			//pickaxe.startMinigame (this, n);
 		} 
 		else {
@@ -184,6 +202,26 @@ public class Character : MonoBehaviour {
 
 	public void finishMining() {
 		changeState (State.idle);
+	}
+
+	private void checkPickups() {
+
+		List<OrePickup> picked = new List<OrePickup>();
+
+		foreach (OrePickup OP in OrePickup.oreList) {
+			
+			Vector2 characterPosition = new Vector2 (transform.position.x, transform.position.y);
+			Vector2 orePosition = new Vector2 (OP.transform.position.x, OP.transform.position.y);
+			float distance = Vector2.Distance (characterPosition, orePosition);
+
+			if (distance <= pickUpDistance) {
+				picked.Add (OP.GetComponent<OrePickup>());
+			}
+		}
+
+		foreach (OrePickup OP in picked) {
+			OP.pickup ();
+		}
 	}
 
 	protected void pause() {

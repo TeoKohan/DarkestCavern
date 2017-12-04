@@ -4,26 +4,56 @@ using UnityEngine;
 
 public class Node : MonoBehaviour {
 
-	public GameObject ore;
+	protected static List<Node> nodeList = new List<Node>();
 
-	public HPBar hpbar;
-	public int maxhp;
-	public int hp { get; private set;}
-	public int armor;
+	public HPBar hpBar;
+	public Transform hotspot;
+	public GameObject ore;
 	public int oreQuantity;
 
+	public int maxhp;
+	public int armor;
+
+	public int hp { get; private set;}
 	public bool active { get; private set;}
+
+	public static Node getNode(Vector3 position, float range) {
+		
+		foreach (Node N in Node.nodeList) {
+			if (N.active) {
+				float distance = Vector3.Distance (position, N.hotspot.position);
+				if (distance <= range) {
+					return N;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	void Start() {
+		nodeList.Add (this);
+		active = true;
+	}
+
+	public void reset() {
+		hp = maxhp;
+		activate ();
+	}
 
 	public void activate() {
 		active = true;
-		hp = maxhp;
+	}
+
+	public void deactivate() {
+		active = false;
 	}
 
 	public void damage (int damage) {
 		if (active) {
 			hp -= damage;
 			hp = Mathf.Clamp (hp, 0, maxhp);
-			hpbar.updatePercentage ((float)hp / (float)maxhp * 100f);
+			hpBar.updatePercentage ((float)hp / (float)maxhp * 100f);
 			checkDeath ();
 		}
 	}
@@ -31,7 +61,7 @@ public class Node : MonoBehaviour {
 	protected void checkDeath() {
 		if (hp <= 0) {
 			yieldResources ();
-			GameManager.instance.currentCharacter.pickaxe.minigame.finish ();
+			GameManager.instance.minigameManager.nodeDestroyed ();
 		}
 	}
 
@@ -45,15 +75,12 @@ public class Node : MonoBehaviour {
 
 	IEnumerator fade(int seconds) {
 
+		Material material = this.GetComponent<Renderer> ().material;
 		float startTime = Time.time;
 		while (Time.time - startTime < seconds) {
-			setDesaturation (Mathf.Clamp01((Time.time - startTime) / seconds));
+			material.SetFloat ("_Desaturation", Mathf.Clamp01((Time.time - startTime) / seconds));
 			yield return null;
 		}
-		setDesaturation (1f);
-	}
-
-	protected void setDesaturation (float f) {
-		this.GetComponent<Renderer> ().material.SetFloat ("_Desaturation", f);
+		material.SetFloat ("_Desaturation", 1f);
 	}
 }

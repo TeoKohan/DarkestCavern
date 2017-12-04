@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OrePickup : MonoBehaviour {
 
-	public static List<Transform> oreList = new List<Transform>();
+	public static List<OrePickup> oreList = new List<OrePickup>();
 
 	public Ore type;
 
@@ -13,14 +13,14 @@ public class OrePickup : MonoBehaviour {
 
 	void Start () {
 
-		oreList.Add (transform);
+		oreList.Add (this);
 		Invoke ("activate", 1f);
 	}
 
 	public void pickup() {
 		if (active) {
-			GameManager.instance.currentCharacter.bag.addOre (type, 1);
-			GameManager.instance.ores.Remove (this);
+			GameManager.instance.currentCharacter.inventory.bag.addOre (type, 1);
+			oreList.Remove (this);
 			Destroy (gameObject);
 		}
 	}

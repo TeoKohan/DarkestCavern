@@ -7,8 +7,8 @@ public class UIManager : MonoBehaviour {
 
 	public GameObject UI;
 
-	public Material screenBlack;
-	public Transform helmet;
+	private Transform lightBulb;
+	private Material shadowPlane;
 
 	public Image[] prompts;
 	public Sprite[] buttons;
@@ -23,63 +23,40 @@ public class UIManager : MonoBehaviour {
 	private GameManager gameManager;
 	private Dictionary<PickaxeAction, Sprite> sprites;
 
-	void Start () {
+	void Start() {
+
 		gameManager = GameManager.instance;
+
+		sprites = new Dictionary<PickaxeAction, Sprite> ();
+		sprites.Add (PickaxeAction.left_arrow, Resources.Load("left_arrow", typeof(Sprite)) as Sprite);
+		sprites.Add (PickaxeAction.up_arrow, Resources.Load("up_arrow", typeof(Sprite)) as Sprite);
+		sprites.Add (PickaxeAction.right_arrow, Resources.Load("right_arrow", typeof(Sprite)) as Sprite);
+		sprites.Add (PickaxeAction.down_arrow, Resources.Load("down_arrow", typeof(Sprite)) as Sprite);
+		sprites.Add (PickaxeAction.spacebar, Resources.Load("spacebar", typeof(Sprite)) as Sprite);
+		hideButtons();
 	}
 
 	public void updateUI(Inventory inventory) {
-		for (int i = 0; i < oreQuantity.Length; i++) {
-			oreQuantity [i].text = data.ores [i].ToString() + " / " + GameManager.instance.currentCharacter.bag.size;
-			if (data.ores [i] <= 0) {
-				ores [i].gameObject.SetActive (false);
-				oreQuantity [i].gameObject.SetActive (false);
-			} 
-			else {
-				ores [i].gameObject.SetActive (true);
-				oreQuantity [i].gameObject.SetActive (true);
-			}
+
+		float lightLevel = gameManager.lightLevel;
+
+		if (lightBulb == null) {
+			lightBulb = GameObject.Find ("lightBulb").transform;
 		}
 
-		float p = gameManager.currentCharacter.lamp.getLightPercentage ();
-		if (p <= 0f) {
-			GameManager.instance.blackout ();
+		if (shadowPlane == null) {
+			shadowPlane = GameObject.Find ("shadowPlane").GetComponent<Renderer> ().material;
 		}
 
-		else {
-			if (p > 0.666f) {
-				lampIcon.sprite = lampStates [0];
-			} 
-			else if (p > 0.333f) {
-				lampIcon.sprite = lampStates [1];
-			}
-			else {
-				lampIcon.sprite = lampStates [2];
-			}
-			lamp.updatePercentage (p * 100);
-		}
-
-		Vector3 h = Camera.main.WorldToScreenPoint (helmet.position);
-		h = Camera.main.ScreenToWorldPoint(new Vector3(h.x, h.y, 4.5f));
-		screenBlack.SetVector ("_LightPosition", h);
-		screenBlack.SetFloat ("_Power", p);
+		Vector3 lightPosition = Camera.main.WorldToScreenPoint (lightBulb.position);
+		lightPosition = Camera.main.ScreenToWorldPoint(new Vector3(lightPosition.x, lightPosition.y, 4.5f));
+		shadowPlane.SetVector ("_LightPosition", lightPosition);
+		shadowPlane.SetFloat ("_Power", lightLevel);
 	}
 
 	public void camp() {
 		hideButtons ();
 		hideLight ();
-	}
-
-	public void Start() {
-
-		DontDestroyOnLoad (UI);
-
-		sprites = new Dictionary<PickaxeAction, Sprite> ();
-		sprites.Add (PickaxeAction.left_arrow, buttons[0]);
-		sprites.Add (PickaxeAction.up_arrow, buttons[1]);
-		sprites.Add (PickaxeAction.right_arrow, buttons[2]);
-		sprites.Add (PickaxeAction.down_arrow, buttons[3]);
-		sprites.Add (PickaxeAction.spacebar, buttons[4]);
-		hideButtons();
 	}
 
 	public void hideLight() {

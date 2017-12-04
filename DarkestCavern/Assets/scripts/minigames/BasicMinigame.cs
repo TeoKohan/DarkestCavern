@@ -44,9 +44,9 @@ public class BasicMinigame : Minigame {
 		if (action != PickaxeAction.idle) {
 			if (action == keyList [currentKey]) {
 				currentKey++;
-				node.damage(character.pickaxe.damage - node.armor);
+				node.damage(character.inventory.pickaxe.damage - node.armor);
 				if (currentKey >= keyList.Length) {
-					node.damage(character.pickaxe.damage * 2);
+					node.damage(character.inventory.pickaxe.damage * 2);
 					finish ();
 				}
 			}
