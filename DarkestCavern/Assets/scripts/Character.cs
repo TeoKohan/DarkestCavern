@@ -45,26 +45,19 @@ public class Character : MonoBehaviour {
 		
 		this.inventory = inventory;
 		gameManager = GameManager.instance;
+		sprite = gameObject.GetComponent<SpriteRenderer> ();
 
 		updateZone ();
 		state = State.idle;
 	}
 
-	void Start() {
-		
-		GameManager.instance.setCharacter (this);
-		sprite = gameObject.GetComponent<SpriteRenderer> ();
-	}
-
 	public void update () {
-		checkPickups ();
 		updateGraphics();
 	}
 
 	public void update (CharacterInputData inputData) {
 		handleAction (inputData);
 		updateZone ();
-		checkPickups ();
 		updateGraphics();
 	}
 
@@ -200,26 +193,6 @@ public class Character : MonoBehaviour {
 
 	public void finishMining() {
 		changeState (State.idle);
-	}
-
-	private void checkPickups() {
-
-		List<OrePickup> picked = new List<OrePickup>();
-
-		foreach (OrePickup OP in OrePickup.oreList) {
-			
-			Vector2 characterPosition = new Vector2 (transform.position.x, transform.position.y);
-			Vector2 orePosition = new Vector2 (OP.transform.position.x, OP.transform.position.y);
-			float distance = Vector2.Distance (characterPosition, orePosition);
-
-			if (distance <= pickUpDistance) {
-				picked.Add (OP.GetComponent<OrePickup>());
-			}
-		}
-
-		foreach (OrePickup OP in picked) {
-			OP.pickup ();
-		}
 	}
 
 	protected void pause() {

@@ -37,7 +37,7 @@ public class MinigameManager {
 
 		int keys = 2 + pickaxe.damage / 10 - node.armor;
 		float duration = keys * Mathf.Clamp (10 / pickaxe.damage - node.armor, 0.5f, 3f);
-		int errors = 5 - pickaxe.damage / 25;
+		int errors = Mathf.Max(2 + keys / 4 - pickaxe.damage / 25 - node.armor, 1);
 		minigame.start (keys, duration, errors);
 		displayKeys (minigame.keyList);
 
@@ -45,30 +45,44 @@ public class MinigameManager {
 	}
 		
 	private void displayKeys(PickaxeAction[] keyList) {
-		gameManager.uiManager.showButtons (keyList);
+		gameManager.uiManager.showPrompts (keyList);
 	}
 		
 	public void handleInput(PickaxeAction action) {
 		
 		if (state == State.active) {
 			
-			Minigame.response response = mineSession.minigame.handleInput (action);
+			Minigame.Response response = mineSession.minigame.handleInput (action);
 			switch (response) {
 
-			case Minigame.response.correct:
+			case Minigame.Response.correct:
 				
 				gameManager.soundManager.hit ();
 				if (mineSession.minigame.currentKey >= mineSession.minigame.keyList.Length) {
-					if (mineSession.node.damage (mineSession.pickaxe.damage)) {
-						finish (mineSession);
-					}
+					mineSession.node.damage (mineSession.pickaxe.damage);
+					finish (mineSession);
+				} 
+				else {
+					gameManager.uiManager.updateButtons (mineSession.minigame.keystates);
 				}
 				break;
 
-			case Minigame.response.incorrect:
+			case Minigame.Response.incorrect:
+
+				gameManager.soundManager.incorrect ();
+
 				if (mineSession.minigame.errors <= 0) {
-					gameManager.soundManager.incorrect ();
 					finish (mineSession);
+				} 
+
+				else {
+					if (mineSession.minigame.currentKey >= mineSession.minigame.keyList.Length) {
+						mineSession.node.damage (mineSession.pickaxe.damage);
+						finish (mineSession);
+					} 
+					else {
+						gameManager.uiManager.updateButtons (mineSession.minigame.keystates);
+					}
 				}
 				break;
 
@@ -79,7 +93,6 @@ public class MinigameManager {
 	}
 
 	private void finish(MineSession mineSession) {
-		gameManager.uiManager.hideButtons ();
 		gameManager.endMinigame ();
 		state = State.inactive;
 	}

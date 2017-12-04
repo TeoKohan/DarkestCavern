@@ -7,7 +7,7 @@ public class Bag {
 	const int baseSize = 10;
 
 	public int size { get; protected set;}
-	protected Dictionary<Ore, int> ores;
+	public Dictionary<Ore, int> ores { get; protected set;}
 
 	public Bag () {
 
@@ -17,7 +17,6 @@ public class Bag {
 		ores.Add (Ore.ruby, 0);
 		ores.Add (Ore.emerald, 0);
 		ores.Add (Ore.saphire, 0);
-		ores.Add (Ore.diamond, 0);
 
 		size = baseSize;
 	}

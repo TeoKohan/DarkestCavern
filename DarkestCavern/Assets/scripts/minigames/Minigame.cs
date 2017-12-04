@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Minigame {
 
-	public enum response {correct, incorrect, wait}
+	public enum Response {wait, correct, incorrect}
 
 	public List<PickaxeAction> availableKeys { get; private set; }
 	public PickaxeAction[] keyList { get; private set; }
+	public Response[] keystates { get; private set; }
 
 	public float duration { get; private set; }
 	public int errors { get; private set; }
@@ -34,28 +35,32 @@ public class Minigame {
 		currentKey = 0;
 	}
 
-	public response handleInput(PickaxeAction action) {
+	public Response handleInput(PickaxeAction action) {
 		if (action != PickaxeAction.idle) {
 			if (action == keyList [currentKey]) {
+				keystates [currentKey] = Response.correct;
 				currentKey++;
-				return response.correct;
+				return Response.correct;
 			}
 			else {
+				keystates [currentKey] = Response.incorrect;
 				currentKey++;
 				errors--;
-				return response.incorrect;
+				return Response.incorrect;
 			}
 		} 
 		else {
-			return response.wait;
+			return Response.wait;
 		}
 	}
 
 	public void refreshKeys(int keys) {
 
 		keyList = new PickaxeAction[keys];
+		keystates = new Response[keys];
 		for (int i = 0; i < keys; i++) {
 			keyList [i] = availableKeys[Random.Range (0, availableKeys.Count)];
+			keystates [i] = Response.wait;
 		}
 	}
 }

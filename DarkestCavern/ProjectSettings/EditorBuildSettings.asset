@@ -5,12 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/scenes/Start.unity
+    guid: 2f53055d4dad2cd4aab2798baecf91ff
   - enabled: 1
     path: Assets/scenes/Menu.unity
-    guid: ece491db0349c1b4f903714e55a1f1df
+    guid: b7a6c8ef1da4aa34e861abc5283bf9e0
   - enabled: 1
     path: Assets/scenes/Camp.unity
     guid: c614ef501974e1148b92b83d4b71cc92
   - enabled: 1
     path: Assets/scenes/Cavern.unity
-    guid: b7a6c8ef1da4aa34e861abc5283bf9e0
+    guid: 74446263b1c8f4f4daf7b838deb76346

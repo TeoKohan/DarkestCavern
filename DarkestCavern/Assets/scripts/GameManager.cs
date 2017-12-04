@@ -7,6 +7,18 @@ using UnityEngine.SceneManagement;
 
 public sealed class GameManager : MonoBehaviour {
 
+	public struct MiningSession{
+		public float duration;
+		public float endTime;
+		public float lightLevel;
+
+		public MiningSession (float duration) {
+			this.duration = duration;
+			endTime = Time.time + duration;
+			lightLevel = 1f;
+		}
+	}
+
 	public static GameManager instance { get; private set;}
 
 	public InputManager inputManager { get; private set;}
@@ -14,10 +26,24 @@ public sealed class GameManager : MonoBehaviour {
 	public UIManager uiManager;
 	public SoundManager soundManager;
 
-	public Character currentCharacter { get; private set;}
+	public Character character { get; private set;}
+	private Inventory wardrobe;
 
 	public bool paused { get; private set;}
-	public float lightLevel { get; private set;}
+	public MiningSession miningSession { get; private set;}
+	public float lightLevel {
+		get {
+			float startTime = miningSession.endTime - miningSession.duration;
+			float currentTime = Time.time - startTime;
+			float percentage = 1 - (currentTime / miningSession.duration);
+			if (percentage <= 0f) {
+				changeState(State.camp);
+			}
+			return percentage;
+		} 
+		private set {
+			;}
+	}
 
 	public enum State {menu, camp, mine, pause, minigame}
 	private State state;
@@ -34,9 +60,27 @@ public sealed class GameManager : MonoBehaviour {
 		soundManager.initialize ();
 
 		paused = false;
+		wardrobe = new Inventory(new Bag(), new Helmet(), new Pickaxe());
 
-		//DEBUG
-		state = State.mine;
+		state = State.menu;
+		changeState (state);
+	}
+
+	private void loadScene(State state) {
+		switch (state) {
+		case State.menu:
+			SceneManager.LoadScene (1);
+			break;
+		case State.camp:
+			SceneManager.LoadScene (2);
+			break;
+		case State.mine:
+			SceneManager.LoadScene (3);
+			break;
+		default:
+			SceneManager.LoadScene (0);
+			break;
+		}
 	}
 
 	public bool startMinigame(Pickaxe pickaxe, Node node) {
@@ -51,13 +95,60 @@ public sealed class GameManager : MonoBehaviour {
 	public void endMinigame() {
 		if (state == State.minigame) {
 			changeState (State.mine);
-			currentCharacter.finishMining ();
+			uiManager.hidePrompts ();
+			character.finishMining ();
 		}
 	}
 
-	private void changeState(State state) {
+	public void changeState(State state) {
 		previousState = this.state;
 		switch (previousState) {
+
+		case State.menu:
+			switch (state) {
+			case State.menu:
+				uiManager.setMode (State.menu);
+				loadScene (State.menu);
+				break;
+			case State.camp:
+				if (character != null) {
+					wardrobe = character.inventory;
+				}
+				uiManager.setMode (State.camp);
+				loadScene (State.camp);
+				break;
+			case State.mine:
+				getCharacter ();
+				dress (wardrobe);
+				uiManager.setMode (State.mine);
+				miningSession = new MiningSession (character.inventory.helmet.duration);
+				break;
+			}
+			break;
+
+		case State.camp:
+			switch (state) {
+			case State.mine:
+				loadScene (State.mine);
+				getCharacter ();
+				dress (wardrobe);
+				miningSession = new MiningSession (character.inventory.helmet.duration);
+				uiManager.setMode (State.mine);
+				break;
+			}
+			break;
+
+		case State.mine:
+			switch (state) {
+			case State.camp:
+				wardrobe = character.inventory;
+				uiManager.setMode (State.camp);
+
+				break;
+			case State.minigame:
+				break;
+			}
+			break;
 
 		case State.minigame:
 			switch (state) {
@@ -66,12 +157,6 @@ public sealed class GameManager : MonoBehaviour {
 			}
 			break;
 
-		case State.mine:
-			switch (state) {
-			case State.minigame:
-				break;
-			}
-			break;
 		}
 		this.state = state;
 	}
@@ -88,15 +173,16 @@ public sealed class GameManager : MonoBehaviour {
 		case State.mine:
 			CharacterInputData inputData = inputManager.characterInput ();
 
-			updateLightLevel ();
-			uiManager.updateUI (currentCharacter.inventory);
-			currentCharacter.update (inputData);
+			character.update (inputData);
+			uiManager.updateUI (character.inventory, state);
+
 			break;
 		case State.minigame:
-			updateLightLevel ();
-			uiManager.updateUI (currentCharacter.inventory);
-			currentCharacter.update ();
+			
+			character.update ();
+			uiManager.updateUI (character.inventory, state);
 			minigameManager.handleInput (inputManager.pickaxeInput ());
+
 			break;
 		case State.pause:
 			break;
@@ -105,10 +191,6 @@ public sealed class GameManager : MonoBehaviour {
 		}
 	}
 		
-	public void updateLightLevel() {
-		lightLevel = 1f;
-	}
-
 	private void handleInput(GameAction action) {
 		switch (action) {
 		case GameAction.pause:
@@ -124,10 +206,19 @@ public sealed class GameManager : MonoBehaviour {
 		//PAUSE UNPAUSE CODE
 	}
 
-	public void setCharacter(Character character) {
-		currentCharacter = character;
-		character.initialize (new Inventory(new Bag(), new Helmet(), new Pickaxe()));
-    }
+	public Character getCharacter() {
+		if (character != null) {
+			return character;
+		} 
+		else {
+			character = GameObject.Find ("character").GetComponent<Character>() as Character;
+			return character;
+		}
+	}
+
+	private void dress (Inventory clothes) {
+		character.initialize (clothes);
+	}
 
 	public void changeZone(int zone) {
 		StartCoroutine (moveCamera(0.5f, zone));
@@ -154,15 +245,15 @@ public sealed class GameManager : MonoBehaviour {
 		switch (l) {
 		case 0:
 			state = State.menu;
-			currentCharacter.gameObject.SetActive (false);
+			character.gameObject.SetActive (false);
 			break;
 		case 1:
 			state = State.camp;
-			currentCharacter.gameObject.SetActive (false);
+			character.gameObject.SetActive (false);
 			break;
 		case 2:
 			state = State.mine;
-			currentCharacter.gameObject.SetActive (true);
+			character.gameObject.SetActive (true);
 			break;
 		}
 	}

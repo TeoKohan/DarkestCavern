@@ -6,7 +6,11 @@ ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
+    100002: locator3in
+    100004: locator3out
     400000: //RootNode
+    400002: locator3in
+    400004: locator3out
     2300000: //RootNode
     3300000: //RootNode
     4300000: level03
@@ -88,7 +92,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

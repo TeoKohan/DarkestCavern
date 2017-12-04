@@ -6,9 +6,9 @@ public class Node : MonoBehaviour {
 
 	protected static List<Node> nodeList = new List<Node>();
 
-	public HPBar hpBar;
+	public Bar hpBar;
 	public Transform hotspot;
-	public GameObject ore;
+	public Ore ore;
 	public int oreQuantity;
 
 	public int maxhp;
@@ -33,7 +33,7 @@ public class Node : MonoBehaviour {
 
 	void Start() {
 		nodeList.Add (this);
-		active = true;
+		reset ();
 	}
 
 	public void reset() {
@@ -71,9 +71,7 @@ public class Node : MonoBehaviour {
 	}
 
 	protected void yieldResources() {
-		for (int i = 0; i < oreQuantity; i++) {
-			Instantiate (ore, transform.position, Quaternion.identity);
-		}
+		GameManager.instance.character.inventory.bag.addOre (ore, oreQuantity);
 		active = false;
 		StartCoroutine (fade (1));
 	}

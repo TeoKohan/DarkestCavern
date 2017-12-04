@@ -8,7 +8,7 @@ public class Helmet {
 	public float radius { get; set; }
 
 	public Helmet () {
-		this.duration = 30f;
+		this.duration = 5f;
 		this.radius = 1f;
 	}
 

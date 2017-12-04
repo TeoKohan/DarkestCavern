@@ -5,45 +5,172 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
-	public GameObject UI;
+	public struct oreDisplay {
+		public Image image;
+		public Text text;
+
+		public oreDisplay(Image image, Text text) {
+			this.image = image;
+			this.text = text;
+		}
+	}
 
 	private Transform lightBulb;
 	private Material shadowPlane;
 
+	public Button startGameButton;
+
+	public Button upgradePickaxeButton;
+	public Button upgradeLampButton;
+	public Button upgradeBagButton;
+	public Button spelunkButton;
+
 	public Image[] prompts;
-	public Sprite[] buttons;
-
-	public Image[] ores;
-	public Text[] oreQuantity;
-
+	public Image[] oreImages;
+	public Text[] oreText;
 	public Image lightIcon;
 	public Sprite[] lampStates;
-	public HPBar lamp;
+	public Bar lightBar;
 
 	private GameManager gameManager;
-	private Dictionary<PickaxeAction, Sprite> sprites;
+	private Dictionary<PickaxeAction, Sprite> arrowPrompts;
+	private Dictionary<Sprite, Sprite> pressedArrowPrompts;
+	private Sprite wrongPrompt;
+	private Dictionary<Ore, oreDisplay> ores;
 
 	public void initialize() {
 
 		gameManager = GameManager.instance;
 
-		sprites = new Dictionary<PickaxeAction, Sprite> ();
-		sprites.Add (PickaxeAction.left_arrow, Resources.Load("left_arrow", typeof(Sprite)) as Sprite);
-		sprites.Add (PickaxeAction.up_arrow, Resources.Load("up_arrow", typeof(Sprite)) as Sprite);
-		sprites.Add (PickaxeAction.right_arrow, Resources.Load("right_arrow", typeof(Sprite)) as Sprite);
-		sprites.Add (PickaxeAction.down_arrow, Resources.Load("down_arrow", typeof(Sprite)) as Sprite);
-		sprites.Add (PickaxeAction.spacebar, Resources.Load("spacebar", typeof(Sprite)) as Sprite);
+		startGameButton.onClick.AddListener (startGame);
 
-		hideButtons();
+		spelunkButton.onClick.AddListener (spelunk);
+
+		upgradePickaxeButton.onClick.AddListener (upgradePickaxe);
+		upgradeLampButton.onClick.AddListener (upgradeLamp);
+		upgradeBagButton.onClick.AddListener (upgradeBag);
+
+		arrowPrompts = new Dictionary<PickaxeAction, Sprite> ();
+		arrowPrompts.Add (PickaxeAction.left_arrow, Resources.Load("left_arrow", typeof(Sprite)) as Sprite);
+		arrowPrompts.Add (PickaxeAction.up_arrow, Resources.Load("up_arrow", typeof(Sprite)) as Sprite);
+		arrowPrompts.Add (PickaxeAction.right_arrow, Resources.Load("right_arrow", typeof(Sprite)) as Sprite);
+		arrowPrompts.Add (PickaxeAction.down_arrow, Resources.Load("down_arrow", typeof(Sprite)) as Sprite);
+		arrowPrompts.Add (PickaxeAction.spacebar, Resources.Load("spacebar", typeof(Sprite)) as Sprite);
+
+		pressedArrowPrompts = new Dictionary<Sprite, Sprite> ();
+		Sprite sprite;
+		arrowPrompts.TryGetValue (PickaxeAction.left_arrow, out sprite);
+		pressedArrowPrompts.Add (sprite, Resources.Load("left_arrow_pressed", typeof(Sprite)) as Sprite);
+		arrowPrompts.TryGetValue (PickaxeAction.up_arrow, out sprite);
+		pressedArrowPrompts.Add (sprite, Resources.Load("up_arrow_pressed", typeof(Sprite)) as Sprite);
+		arrowPrompts.TryGetValue (PickaxeAction.right_arrow, out sprite);
+		pressedArrowPrompts.Add (sprite, Resources.Load("right_arrow_pressed", typeof(Sprite)) as Sprite);
+		arrowPrompts.TryGetValue (PickaxeAction.down_arrow, out sprite);
+		pressedArrowPrompts.Add (sprite, Resources.Load("down_arrow_pressed", typeof(Sprite)) as Sprite);
+		arrowPrompts.TryGetValue (PickaxeAction.spacebar, out sprite);
+		pressedArrowPrompts.Add (sprite, Resources.Load("spacebar_pressed", typeof(Sprite)) as Sprite);
+
+		wrongPrompt = Resources.Load("wrong_pressed", typeof(Sprite)) as Sprite;
+
+		ores = new Dictionary<Ore, oreDisplay> ();
+		ores.Add (Ore.silver, new oreDisplay(oreImages[0], oreText[0]));
+		ores.Add (Ore.gold, new oreDisplay(oreImages[1], oreText[1]));
+		ores.Add (Ore.ruby, new oreDisplay(oreImages[2], oreText[2]));
+		ores.Add (Ore.emerald, new oreDisplay(oreImages[3], oreText[3]));
+		ores.Add (Ore.saphire, new oreDisplay(oreImages[4], oreText[4]));
 	}
 
-	public void updateUI(Inventory inventory) {
+	private void startGame() {
+		gameManager.changeState (GameManager.State.camp);
+	}
 		
-		float lightLevel = gameManager.lightLevel;
-		updateLightMeter (lightLevel);
+	private void spelunk() {
+		gameManager.changeState (GameManager.State.mine);
+	}
 
+	private void upgradePickaxe() {
+		
+	}
 
+	private void upgradeLamp() {
 
+	}
+
+	private void upgradeBag() {
+
+	}
+
+	public void setMode (GameManager.State state) {
+		switch (state) {
+		case GameManager.State.menu:
+			hideAll ();
+			showMenuButtons ();
+			break;
+		case GameManager.State.camp:
+			hideAll ();
+			showCampButtons ();
+			showOres ();
+			break;
+		case GameManager.State.mine:
+			hideAll ();
+			showLightMeter ();
+			break;
+		}
+	}
+
+	private void hideAll() {
+		hideMenuButtons ();
+		hideCampButtons ();
+		hidePrompts ();
+		hideLightMeter ();
+		hideOres ();
+	}
+
+	private void showAll() {
+		showMenuButtons ();
+		showCampButtons ();
+		showPrompts (new PickaxeAction[12]);
+		showLightMeter ();
+		showOres ();
+	}
+
+	public void updateUI(Inventory inventory, GameManager.State state) {
+
+		switch (state) {
+		case GameManager.State.menu:
+			break;
+		case GameManager.State.camp:
+			break;
+		case GameManager.State.mine:
+			float lightLevel = gameManager.lightLevel;
+			updateLightMeter (lightLevel);
+
+			updateOres (inventory.bag.ores, inventory.bag.size);
+			break;
+		}
+	}
+
+	private void showMenuButtons() {
+		startGameButton.gameObject.SetActive (true);
+	}
+
+	private void hideMenuButtons() {
+		startGameButton.gameObject.SetActive (false);
+	}
+
+	private void showCampButtons() {
+		upgradePickaxeButton.gameObject.SetActive (true);
+		upgradeLampButton.gameObject.SetActive (true);
+		upgradeBagButton.gameObject.SetActive (true);
+		spelunkButton.gameObject.SetActive (true);
+
+	}
+
+	private void hideCampButtons() {
+		upgradePickaxeButton.gameObject.SetActive (false);
+		upgradeLampButton.gameObject.SetActive (false);
+		upgradeBagButton.gameObject.SetActive (false);
+		spelunkButton.gameObject.SetActive (false);
 	}
 
 	private void updateLightMeter(float lightLevel) {
@@ -53,7 +180,13 @@ public class UIManager : MonoBehaviour {
 		}
 
 		if (shadowPlane == null) {
-			shadowPlane = GameObject.Find ("shadowPlane").GetComponent<Renderer> ().material;
+			GameObject shadowPlaneGO = GameObject.Find ("shadowPlane");
+			if (shadowPlaneGO == null) {
+				return;
+			} 
+			else {
+				shadowPlane = shadowPlaneGO.GetComponent<Renderer> ().material;
+			}
 		}
 
 		Vector3 lightPosition = Camera.main.WorldToScreenPoint (lightBulb.position);
@@ -63,22 +196,70 @@ public class UIManager : MonoBehaviour {
 	}
 
 	public void showLightMeter() {
-		lamp.show ();
+		lightBar.show ();
 		lightIcon.gameObject.SetActive (true);
 	}
 
 	public void hideLightMeter() {
-		lamp.hide ();
+		lightBar.hide ();
 		lightIcon.gameObject.SetActive (false);
 	}
 
-	public void showButtons(PickaxeAction[] actions) {
+	private void updateOres(Dictionary<Ore, int> ores, int size) {
+		foreach (Ore O in System.Enum.GetValues(typeof(Ore))) {
+			int number = ores [O];
+			if (number > 0) {
+				this.ores [O].text.text = number.ToString () + "/" + size;
+				this.ores [O].image.gameObject.SetActive (true);
+				this.ores [O].text.gameObject.SetActive (true);
+			} 
+
+			else {
+				this.ores [O].image.gameObject.SetActive (false);
+				this.ores [O].text.gameObject.SetActive (false);
+			}
+		}
+
+	}
+
+	private void showOres() {
+		foreach (Ore O in System.Enum.GetValues(typeof(Ore))) {
+			this.ores [O].image.gameObject.SetActive (true);
+			this.ores [O].text.gameObject.SetActive (true);
+		}
+	}
+
+	private void hideOres() {
+		foreach (Ore O in System.Enum.GetValues(typeof(Ore))) {
+			this.ores [O].image.gameObject.SetActive (false);
+			this.ores [O].text.gameObject.SetActive (false);
+		}
+	}
+
+	public void updateButtons(Minigame.Response[] keyStates) {
+
+		for (int i = 0; i < keyStates.Length; i++) {
+			switch (keyStates [i]) {
+			case Minigame.Response.wait:
+				break;
+			case Minigame.Response.correct:
+				prompts[i].sprite = pressedArrowPrompts[prompts[i].sprite];
+				break;
+			case Minigame.Response.incorrect:
+				prompts [i].sprite = wrongPrompt;
+				break;
+			}
+		}
+	}
+
+	public void showPrompts(PickaxeAction[] actions) {
+			
 		int n = Mathf.Clamp (actions.Length, 0, 12);
 		for (int i = 0; i < n; i++) {
 			Image prompt = prompts [i];
 			prompt.gameObject.SetActive (true);
 			Sprite sprite;
-			sprites.TryGetValue (actions[i], out sprite);
+			arrowPrompts.TryGetValue (actions[i], out sprite);
 			prompt.sprite = sprite;
 			}
 
@@ -110,7 +291,7 @@ public class UIManager : MonoBehaviour {
 		}
 	}
 
-	public void hideButtons (){
+	public void hidePrompts (){
 		foreach (Image I in prompts) {
 			I.gameObject.SetActive (false);
 		}
