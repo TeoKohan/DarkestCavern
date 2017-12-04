@@ -56,6 +56,11 @@ public class Character : MonoBehaviour {
 		sprite = gameObject.GetComponent<SpriteRenderer> ();
 	}
 
+	public void update () {
+		checkPickups ();
+		updateGraphics();
+	}
+
 	public void update (CharacterInputData inputData) {
 		handleAction (inputData);
 		updateZone ();
@@ -100,7 +105,6 @@ public class Character : MonoBehaviour {
 
 			switch (characterAction) {
 			case CharacterAction.action:
-				changeState (State.mining);
 				attemptMining ();
 				break;
 			case CharacterAction.move:
@@ -118,11 +122,9 @@ public class Character : MonoBehaviour {
 				changeState (State.idle);
 				break;
 			case CharacterAction.action:
-				changeState (State.mining);
 				attemptMining ();
 				break;
 			case CharacterAction.move:
-				changeState (State.walking);
 				move (inputData.movement);
 				break;
 			}
@@ -130,10 +132,6 @@ public class Character : MonoBehaviour {
 
 			//MINING STATE
 		case State.mining:
-			break;
-
-			//LOCKED STATE
-		case State.locked:
 			break;
 
 		default:
@@ -187,13 +185,13 @@ public class Character : MonoBehaviour {
 	}
 
 	protected void attemptMining() {
-
-		Debug.Log ("att mine");
+		
 		Node node = Node.getNode(transform.position, inventory.pickaxe.range);
-		Debug.Log (node);
 
 		if (node != null) {
-			//pickaxe.startMinigame (this, n);
+			if (gameManager.startMinigame (inventory.pickaxe, node)) {
+				changeState (State.mining);
+			}
 		} 
 		else {
 			finishMining ();

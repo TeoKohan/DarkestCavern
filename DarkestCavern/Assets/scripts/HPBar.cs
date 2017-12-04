@@ -14,7 +14,7 @@ public class HPBar : MonoBehaviour {
 
 	void Start() {
 		updatePercentage(100);
-		hide();
+		//hide();
 	}
 
 	public void updatePercentage(float percentage) {

@@ -52,6 +52,13 @@ public class InputManager {
 		return new CharacterInputData (characterAction, movement);
 	}
 
+	public PickaxeAction pickaxeInput() {
+
+		PickaxeAction action = handlePickaxeAction (pickaxeActions);
+
+		return action;
+	}
+
 	private GameAction handleGameAction(Dictionary<KeyCode, GameAction> actions) {
 		
 		foreach (KeyCode K in actions.Keys) {

@@ -16,14 +16,14 @@ public class UIManager : MonoBehaviour {
 	public Image[] ores;
 	public Text[] oreQuantity;
 
-	public Image lampIcon;
+	public Image lightIcon;
 	public Sprite[] lampStates;
 	public HPBar lamp;
 
 	private GameManager gameManager;
 	private Dictionary<PickaxeAction, Sprite> sprites;
 
-	void Start() {
+	public void initialize() {
 
 		gameManager = GameManager.instance;
 
@@ -33,13 +33,21 @@ public class UIManager : MonoBehaviour {
 		sprites.Add (PickaxeAction.right_arrow, Resources.Load("right_arrow", typeof(Sprite)) as Sprite);
 		sprites.Add (PickaxeAction.down_arrow, Resources.Load("down_arrow", typeof(Sprite)) as Sprite);
 		sprites.Add (PickaxeAction.spacebar, Resources.Load("spacebar", typeof(Sprite)) as Sprite);
+
 		hideButtons();
 	}
 
 	public void updateUI(Inventory inventory) {
-
+		
 		float lightLevel = gameManager.lightLevel;
+		updateLightMeter (lightLevel);
 
+
+
+	}
+
+	private void updateLightMeter(float lightLevel) {
+		
 		if (lightBulb == null) {
 			lightBulb = GameObject.Find ("lightBulb").transform;
 		}
@@ -54,14 +62,14 @@ public class UIManager : MonoBehaviour {
 		shadowPlane.SetFloat ("_Power", lightLevel);
 	}
 
-	public void camp() {
-		hideButtons ();
-		hideLight ();
+	public void showLightMeter() {
+		lamp.show ();
+		lightIcon.gameObject.SetActive (true);
 	}
 
-	public void hideLight() {
+	public void hideLightMeter() {
 		lamp.hide ();
-		lampIcon.gameObject.SetActive (false);
+		lightIcon.gameObject.SetActive (false);
 	}
 
 	public void showButtons(PickaxeAction[] actions) {

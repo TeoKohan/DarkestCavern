@@ -49,20 +49,25 @@ public class Node : MonoBehaviour {
 		active = false;
 	}
 
-	public void damage (int damage) {
+	public bool damage (int damage) {
 		if (active) {
-			hp -= damage;
+			hp -= damage - armor;
 			hp = Mathf.Clamp (hp, 0, maxhp);
 			hpBar.updatePercentage ((float)hp / (float)maxhp * 100f);
-			checkDeath ();
+
+			return checkDeath ();
 		}
+
+		return false;
 	}
 
-	protected void checkDeath() {
+	protected bool checkDeath() {
 		if (hp <= 0) {
 			yieldResources ();
-			GameManager.instance.minigameManager.nodeDestroyed ();
+			return true;
 		}
+
+		return false;
 	}
 
 	protected void yieldResources() {

@@ -12,6 +12,13 @@ public class Bag {
 	public Bag () {
 
 		ores = new Dictionary<Ore, int> ();
+		ores.Add (Ore.silver, 0);
+		ores.Add (Ore.gold, 0);
+		ores.Add (Ore.ruby, 0);
+		ores.Add (Ore.emerald, 0);
+		ores.Add (Ore.saphire, 0);
+		ores.Add (Ore.diamond, 0);
+
 		size = baseSize;
 	}
 
