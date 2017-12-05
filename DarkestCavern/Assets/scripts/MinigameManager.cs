@@ -35,7 +35,7 @@ public class MinigameManager {
 
 		mineSession = new MineSession(minigame, pickaxe, node);
 
-		int keys = 2 + pickaxe.damage / 10 - node.armor;
+		int keys = Mathf.Clamp(2 + pickaxe.damage / 10 - node.armor, 1, 12);
 		float duration = keys * Mathf.Clamp (10 / pickaxe.damage - node.armor, 0.5f, 3f);
 		int errors = Mathf.Max(2 + keys / 4 - pickaxe.damage / 25 - node.armor, 1);
 		minigame.start (keys, duration, errors);
@@ -63,7 +63,7 @@ public class MinigameManager {
 					finish (mineSession);
 				} 
 				else {
-					gameManager.uiManager.updateButtons (mineSession.minigame.keystates);
+					gameManager.uiManager.updateButtons (mineSession.minigame.keyList, mineSession.minigame.keystates);
 				}
 				break;
 
@@ -81,7 +81,7 @@ public class MinigameManager {
 						finish (mineSession);
 					} 
 					else {
-						gameManager.uiManager.updateButtons (mineSession.minigame.keystates);
+						gameManager.uiManager.updateButtons (mineSession.minigame.keyList, mineSession.minigame.keystates);
 					}
 				}
 				break;

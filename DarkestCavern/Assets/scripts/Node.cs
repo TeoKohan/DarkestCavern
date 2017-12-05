@@ -6,6 +6,7 @@ public class Node : MonoBehaviour {
 
 	protected static List<Node> nodeList = new List<Node>();
 
+	public GameObject ores;
 	public Bar hpBar;
 	public Transform hotspot;
 	public Ore ore;
@@ -14,11 +15,13 @@ public class Node : MonoBehaviour {
 	public int maxhp;
 	public int armor;
 
-	public int hp { get; private set;}
-	public bool active { get; private set;}
+	public int hp { get; protected set;}
+	public bool active { get; protected set;}
+
+	protected Material material;
 
 	public static Node getNode(Vector3 position, float range) {
-		
+
 		foreach (Node N in Node.nodeList) {
 			if (N.active) {
 				float distance = Vector3.Distance (position, N.hotspot.position);
@@ -27,18 +30,27 @@ public class Node : MonoBehaviour {
 				}
 			}
 		}
-
 		return null;
 	}
 
-	void Start() {
+	public static void refresh() {
+		foreach (Node N in Node.nodeList) {
+			N.reset ();
+		}
+	}
+
+	public virtual void Start() {
+		material = this.GetComponent<Renderer> ().material;
 		nodeList.Add (this);
 		reset ();
 	}
 
-	public void reset() {
+	public virtual void reset() {
 		hp = maxhp;
+		hpBar.updatePercentage ((float)hp / (float)maxhp * 100f);
+		material.SetFloat ("_Desaturation", 0);
 		activate ();
+		ores.SetActive (true);
 	}
 
 	public void activate() {
@@ -70,15 +82,15 @@ public class Node : MonoBehaviour {
 		return false;
 	}
 
-	protected void yieldResources() {
+	protected virtual void yieldResources() {
 		GameManager.instance.character.inventory.bag.addOre (ore, oreQuantity);
 		active = false;
+		ores.SetActive (false);
 		StartCoroutine (fade (1));
 	}
 
 	IEnumerator fade(int seconds) {
-
-		Material material = this.GetComponent<Renderer> ().material;
+		
 		float startTime = Time.time;
 		while (Time.time - startTime < seconds) {
 			material.SetFloat ("_Desaturation", Mathf.Clamp01((Time.time - startTime) / seconds));

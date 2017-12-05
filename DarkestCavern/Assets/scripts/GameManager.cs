@@ -19,6 +19,10 @@ public sealed class GameManager : MonoBehaviour {
 		}
 	}
 
+	public GameObject campMesh;
+	public GameObject mine;
+	public GameObject shadowPlane;
+
 	public static GameManager instance { get; private set;}
 
 	public InputManager inputManager { get; private set;}
@@ -31,6 +35,7 @@ public sealed class GameManager : MonoBehaviour {
 
 	public bool paused { get; private set;}
 	public MiningSession miningSession { get; private set;}
+
 	public float lightLevel {
 		get {
 			float startTime = miningSession.endTime - miningSession.duration;
@@ -51,7 +56,6 @@ public sealed class GameManager : MonoBehaviour {
 
     void Awake () {
 		instance = this;
-		DontDestroyOnLoad (gameObject);
 
 		inputManager = new InputManager ();
 		minigameManager = new MinigameManager ();
@@ -62,6 +66,9 @@ public sealed class GameManager : MonoBehaviour {
 		paused = false;
 		wardrobe = new Inventory(new Bag(), new Helmet(), new Pickaxe());
 
+		getCharacter ();
+		character.initialize (wardrobe);
+
 		state = State.menu;
 		changeState (state);
 	}
@@ -69,18 +76,71 @@ public sealed class GameManager : MonoBehaviour {
 	private void loadScene(State state) {
 		switch (state) {
 		case State.menu:
-			SceneManager.LoadScene (1);
+			Camera.main.transform.position = new Vector3 (0f, 0f, 0f);
+			character.gameObject.SetActive (false);
+			showMenu ();
+			hideCamp ();
+			hideMine ();
 			break;
+
 		case State.camp:
-			SceneManager.LoadScene (2);
+			Camera.main.transform.position = new Vector3 (-5f, 10f, -21f);
+			character.gameObject.SetActive (false);
+			hideMenu ();
+			showCamp ();
+			hideMine ();
 			break;
+
 		case State.mine:
-			SceneManager.LoadScene (3);
+			Camera.main.transform.position = new Vector3 (0f, 3f, -10f);
+			character.transform.position = new Vector3 (0f, 1.25f, -2f);
+			character.gameObject.SetActive (true);
+			hideMenu ();
+			hideCamp ();
+			showMine ();
+			Node.refresh ();
 			break;
+
 		default:
-			SceneManager.LoadScene (0);
+			character.gameObject.SetActive (false);
+			showMenu ();
+			hideCamp ();
+			hideMine ();
 			break;
 		}
+	}
+
+	private void hideAll() {
+		hideMenu ();
+		hideCamp ();
+		hideMine ();
+	}
+
+	private void showMenu() {
+
+	}
+
+
+	private void hideMenu() {
+		
+	}
+
+	private void hideCamp () {
+		campMesh.SetActive (false);
+	}
+
+	private void showCamp () {
+		campMesh.SetActive (true);
+	}
+
+	private void hideMine () {
+		shadowPlane.SetActive (false);
+		mine.SetActive (false);
+	}
+
+	private void showMine () {
+		shadowPlane.SetActive (true);
+		mine.SetActive (true);
 	}
 
 	public bool startMinigame(Pickaxe pickaxe, Node node) {
@@ -141,6 +201,7 @@ public sealed class GameManager : MonoBehaviour {
 		case State.mine:
 			switch (state) {
 			case State.camp:
+				loadScene (State.camp);
 				wardrobe = character.inventory;
 				uiManager.setMode (State.camp);
 
@@ -152,6 +213,11 @@ public sealed class GameManager : MonoBehaviour {
 
 		case State.minigame:
 			switch (state) {
+			case State.camp:
+				loadScene (State.camp);
+				wardrobe = character.inventory;
+				uiManager.setMode (State.camp);
+				break;
 			case State.mine:
 				break;
 			}
@@ -238,23 +304,5 @@ public sealed class GameManager : MonoBehaviour {
 			yield return null;
 		}
 		mainCamera.transform.position = target;
-	}
-
-	private void loadLevel(int l) {
-		SceneManager.LoadScene (l);
-		switch (l) {
-		case 0:
-			state = State.menu;
-			character.gameObject.SetActive (false);
-			break;
-		case 1:
-			state = State.camp;
-			character.gameObject.SetActive (false);
-			break;
-		case 2:
-			state = State.mine;
-			character.gameObject.SetActive (true);
-			break;
-		}
 	}
 }

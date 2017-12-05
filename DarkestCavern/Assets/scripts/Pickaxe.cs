@@ -9,7 +9,7 @@ public class Pickaxe {
 	public float range { get; protected set; }
 
 	public Pickaxe () {
-		this.damage = 1;
+		this.damage = 5;
 		this.range = 2f;
 		this.minigame = new Minigame ();
 	}

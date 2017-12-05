@@ -40,6 +40,15 @@ public class Character : MonoBehaviour {
 	protected GameManager gameManager;
 	protected SpriteRenderer sprite;
 
+	public void initialize () {
+
+		this.inventory = new Inventory (new Bag (), new Helmet (), new Pickaxe ());
+		gameManager = GameManager.instance;
+		sprite = gameObject.GetComponent<SpriteRenderer> ();
+
+		updateZone ();
+		state = State.idle;
+	}
 
 	public void initialize (Inventory inventory) {
 		

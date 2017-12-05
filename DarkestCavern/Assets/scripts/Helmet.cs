@@ -8,7 +8,7 @@ public class Helmet {
 	public float radius { get; set; }
 
 	public Helmet () {
-		this.duration = 5f;
+		this.duration = 30f;
 		this.radius = 1f;
 	}
 
@@ -16,14 +16,4 @@ public class Helmet {
 		this.duration = duration;
 		this.radius = radius;
 	}
-
-	/*public void setEndTime() {
-		startTime = Time.time;
-		endTime = startTime + duration;
-	}
-
-	public float getLightPercentage() {
-		return (endTime - (Time.time - startTime)) / duration;
-	}*/
-
 }

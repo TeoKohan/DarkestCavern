@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour {
 
 	private GameManager gameManager;
 	private Dictionary<PickaxeAction, Sprite> arrowPrompts;
-	private Dictionary<Sprite, Sprite> pressedArrowPrompts;
+	private Dictionary<PickaxeAction, Sprite> pressedArrowPrompts;
 	private Sprite wrongPrompt;
 	private Dictionary<Ore, oreDisplay> ores;
 
@@ -57,18 +57,12 @@ public class UIManager : MonoBehaviour {
 		arrowPrompts.Add (PickaxeAction.down_arrow, Resources.Load("down_arrow", typeof(Sprite)) as Sprite);
 		arrowPrompts.Add (PickaxeAction.spacebar, Resources.Load("spacebar", typeof(Sprite)) as Sprite);
 
-		pressedArrowPrompts = new Dictionary<Sprite, Sprite> ();
-		Sprite sprite;
-		arrowPrompts.TryGetValue (PickaxeAction.left_arrow, out sprite);
-		pressedArrowPrompts.Add (sprite, Resources.Load("left_arrow_pressed", typeof(Sprite)) as Sprite);
-		arrowPrompts.TryGetValue (PickaxeAction.up_arrow, out sprite);
-		pressedArrowPrompts.Add (sprite, Resources.Load("up_arrow_pressed", typeof(Sprite)) as Sprite);
-		arrowPrompts.TryGetValue (PickaxeAction.right_arrow, out sprite);
-		pressedArrowPrompts.Add (sprite, Resources.Load("right_arrow_pressed", typeof(Sprite)) as Sprite);
-		arrowPrompts.TryGetValue (PickaxeAction.down_arrow, out sprite);
-		pressedArrowPrompts.Add (sprite, Resources.Load("down_arrow_pressed", typeof(Sprite)) as Sprite);
-		arrowPrompts.TryGetValue (PickaxeAction.spacebar, out sprite);
-		pressedArrowPrompts.Add (sprite, Resources.Load("spacebar_pressed", typeof(Sprite)) as Sprite);
+		pressedArrowPrompts = new Dictionary<PickaxeAction, Sprite> ();
+		pressedArrowPrompts.Add (PickaxeAction.left_arrow, Resources.Load("left_arrow_pressed", typeof(Sprite)) as Sprite);
+		pressedArrowPrompts.Add (PickaxeAction.up_arrow, Resources.Load("up_arrow_pressed", typeof(Sprite)) as Sprite);
+		pressedArrowPrompts.Add (PickaxeAction.right_arrow, Resources.Load("right_arrow_pressed", typeof(Sprite)) as Sprite);
+		pressedArrowPrompts.Add (PickaxeAction.down_arrow, Resources.Load("down_arrow_pressed", typeof(Sprite)) as Sprite);
+		pressedArrowPrompts.Add (PickaxeAction.spacebar, Resources.Load("spacebar_pressed", typeof(Sprite)) as Sprite);
 
 		wrongPrompt = Resources.Load("wrong_pressed", typeof(Sprite)) as Sprite;
 
@@ -146,6 +140,10 @@ public class UIManager : MonoBehaviour {
 			updateLightMeter (lightLevel);
 
 			updateOres (inventory.bag.ores, inventory.bag.size);
+			break;
+		case GameManager.State.minigame:
+			lightLevel = gameManager.lightLevel;
+			updateLightMeter (lightLevel);
 			break;
 		}
 	}
@@ -236,14 +234,16 @@ public class UIManager : MonoBehaviour {
 		}
 	}
 
-	public void updateButtons(Minigame.Response[] keyStates) {
+	public void updateButtons(PickaxeAction[] direction, Minigame.Response[] keyStates) {
+
+		Debug.Log (keyStates.Length);
 
 		for (int i = 0; i < keyStates.Length; i++) {
 			switch (keyStates [i]) {
 			case Minigame.Response.wait:
 				break;
 			case Minigame.Response.correct:
-				prompts[i].sprite = pressedArrowPrompts[prompts[i].sprite];
+				prompts[i].sprite = pressedArrowPrompts[direction[i]];
 				break;
 			case Minigame.Response.incorrect:
 				prompts [i].sprite = wrongPrompt;
