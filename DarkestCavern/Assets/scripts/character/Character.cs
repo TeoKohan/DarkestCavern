@@ -8,43 +8,28 @@ public class Character : MonoBehaviour {
 	const float movespeed = 5f;
 	const float pickUpDistance = 1f;
 
-		public Sprite[] idle;
-		public Sprite[] walk;
-		public Sprite[] mine;
-
-		public GameObject helmetSprite;
-
-		public Vector3[] helmetIdlePositions;
-		public Vector3[] helmetWalkPositions;
-		public Vector3[] helmetMinePositions;
-
-		public GameObject pickaxeSprite;
-
-		public Vector3[] pickaxeIdlePositions;
-		public float[] pickaxeIdleRotations;
-		public Vector3[] pickaxeWalkPositions;
-		public float[] pickaxeWalkRotations;
-		public Vector3[] pickaxeMinePositions;
-		public float[] pickaxeMineRotations;
-
 	public Inventory inventory { get; protected set; }
 
 	protected int currentZone;
 
 	protected enum Facing {left, right}
+	protected Facing facing;
+
 	protected enum State {idle, walking, mining, locked}
-	Facing facing;
 	protected State state;
 	protected State previousState;
 
+	protected SpriteManager spriteManager;
 	protected GameManager gameManager;
-	protected SpriteRenderer sprite;
+
 
 	public void initialize () {
 
 		this.inventory = new Inventory (new Bag (), new Helmet (), new Pickaxe ());
+
+		spriteManager = new SpriteManager ();
 		gameManager = GameManager.instance;
-		sprite = gameObject.GetComponent<SpriteRenderer> ();
+
 
 		updateZone ();
 		state = State.idle;
@@ -54,7 +39,6 @@ public class Character : MonoBehaviour {
 		
 		this.inventory = inventory;
 		gameManager = GameManager.instance;
-		sprite = gameObject.GetComponent<SpriteRenderer> ();
 
 		updateZone ();
 		state = State.idle;
@@ -68,31 +52,6 @@ public class Character : MonoBehaviour {
 		handleAction (inputData);
 		updateZone ();
 		updateGraphics();
-	}
-
-	protected void updateGraphics() {
-
-		switch (state) {
-		case State.idle:
-			sprite.sprite = idle [(int)(Time.time * 1 % idle.Length)];
-			helmetSprite.transform.localPosition = helmetIdlePositions [(int)(Time.time * 1 % helmetIdlePositions.Length)];
-			pickaxeSprite.transform.localPosition = pickaxeIdlePositions [(int)(Time.time * 1 % pickaxeIdlePositions.Length)];
-			pickaxeSprite.transform.rotation =Quaternion.Euler(0, 0, pickaxeIdleRotations [(int)(Time.time * 1 % pickaxeIdleRotations.Length)] * transform.localScale.x);
-			break;
-		case State.walking:
-			sprite.sprite = walk [(int)(Time.time * 6 % walk.Length)];
-			helmetSprite.transform.localPosition = helmetWalkPositions [(int)(Time.time * 6 % helmetWalkPositions.Length)];
-			pickaxeSprite.transform.localPosition = pickaxeWalkPositions [(int)(Time.time * 6 % pickaxeWalkPositions.Length)];
-			pickaxeSprite.transform.rotation = Quaternion.Euler (0, 0, pickaxeWalkRotations [(int)(Time.time * 6 % pickaxeWalkRotations.Length)] * transform.localScale.x);
-			setFacing (facing);
-			break;
-		case State.mining:
-			sprite.sprite = mine[(int)(Time.time * 3 % mine.Length)];
-			helmetSprite.transform.localPosition = helmetMinePositions [(int)(Time.time * 3 % helmetMinePositions.Length)];
-			pickaxeSprite.transform.localPosition = pickaxeMinePositions [(int)(Time.time * 3 % pickaxeMinePositions.Length)];
-			pickaxeSprite.transform.rotation =Quaternion.Euler(0, 0, pickaxeMineRotations [(int)(Time.time * 3 % pickaxeMineRotations.Length)] * transform.localScale.x);
-			break;
-		}
 	}
 
 	protected void handleAction (CharacterInputData inputData) {

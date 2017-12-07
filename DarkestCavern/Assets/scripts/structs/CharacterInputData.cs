@@ -2,9 +2,14 @@
 	public CharacterAction characterAction;
 	public float movement;
 
-	public CharacterInputData(CharacterAction characterAction, float movement) {
+	public CharacterInputData(Action characterAction) {
 
-		this.characterAction = characterAction;
-		this.movement = movement;
+		if (Action == Action.left) {
+			
+		}
+
+		else if (Action == Action.right) {
+			
+		}
 	}
 }
