@@ -106,10 +106,10 @@ MonoBehaviour:
     y: 30
     width: 1440
     height: 767
-  m_MinSize: {x: 681, y: 342}
-  m_MaxSize: {x: 12006, y: 8042}
+  m_MinSize: {x: 683, y: 342}
+  m_MaxSize: {x: 12008, y: 8042}
   vertical: 0
-  controlID: 3211
+  controlID: 110
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 342}
   m_MaxSize: {x: 8006, y: 8042}
   vertical: 1
-  controlID: 3212
+  controlID: 52
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 221}
   m_MaxSize: {x: 8006, y: 4021}
   vertical: 0
-  controlID: 3087
+  controlID: 53
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -254,8 +254,8 @@ MonoBehaviour:
     y: 0
     width: 508
     height: 767
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 277, y: 71}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 18}
@@ -365,9 +365,9 @@ MonoBehaviour:
     height: 392
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 
+    m_SelectedIDs: aa2b0000
     m_LastClickedID: 0
-    m_ExpandedIDs: f4b3fffff6b3ffff9ab5ffffd8b9ffffa6fbffff00000000a42900000e340000d2340000
+    m_ExpandedIDs: 88fbffff00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -422,9 +422,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 3.3276026, y: 1.2273946, z: 2.2131977}
+    m_Target: {x: 0.43956918, y: 1.7151612, z: 2.6655693}
     speed: 2
-    m_Value: {x: 3.3276026, y: 1.2273946, z: 2.2131977}
+    m_Value: {x: 0.43956918, y: 1.7151612, z: 2.6655693}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -447,13 +447,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: -0.09230002, y: -0.2683792, z: 0.025855344, w: -0.95853215}
+    m_Target: {x: -0.0014993063, y: -0.0314951, z: 0.00005904854, w: -0.9995019}
     speed: 2
-    m_Value: {x: -0.09230002, y: -0.26837924, z: 0.025855346, w: -0.9585322}
+    m_Value: {x: -0.0014993077, y: -0.03149513, z: 0.000059048594, w: -0.9995028}
   m_Size:
-    m_Target: 11.068748
+    m_Target: 9.524159
     speed: 2
-    m_Value: 11.068748
+    m_Value: 9.524159
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -529,19 +529,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/scripts/character/states
+    - Assets/scripts/enums
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/scripts/character/states
+  - Assets/scripts/enums
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\teoko\Documents\GitHub\DarkestCavern\DarkestCavern
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 74460000
-    m_LastClickedID: 18036
-    m_ExpandedIDs: 000000004c270000f0270000f627000080280000c02800005a46000000ca9a3bffffff7f
+    m_SelectedIDs: f6270000
+    m_LastClickedID: 10230
+    m_ExpandedIDs: 0000000064270000a6270000062800000c2800009e28000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -569,7 +569,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000004c270000f0270000f627000080280000c028000000ca9a3bffffff7f
+    m_ExpandedIDs: 0000000064270000a6270000062800000c2800009e280000e0280000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -594,8 +594,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: aa2b0000
+    m_LastClickedInstanceID: 11178
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000000000007e7b00007c2700006a89000032280000
     m_RenameOverlay:

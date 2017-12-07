@@ -45,7 +45,7 @@ public class Character : MonoBehaviour {
 	}
 
 	public void update () {
-		updateGraphics();
+		spriteManager.update ();
 	}
 
 	public void update (CharacterInputData inputData) {

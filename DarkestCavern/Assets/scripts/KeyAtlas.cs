@@ -2,25 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Action {left, up, right, down, mine};
-
 public static class KeyAtlas {
 
-	public static Dictionary<Action, List<KeyCode>> keys { get; protected set; }
+	public static Dictionary<CharacterState, List<KeyCode>> keys { get; protected set; }
 
-	public static void setKey(Action action, KeyCode keycode) {
+	public static void setKey(CharacterState state, KeyCode keycode) {
 		if (keys) {
-			if (keys [Action]) {
-				keys [Action].Add (keycode);
+			if (keys [CharacterState]) {
+				keys [CharacterState].Add (keycode);
 			}
 			else {
-				keys.Add (action, new List<KeyCode> (keycode));
+				keys.Add (state, new List<KeyCode> (keycode));
 			}
 		}
 
 		else {
-			keys = new Dictionary<Action, List<KeyCode>> ();
-			setKey (action, keycode);
+			keys = new Dictionary<CharacterState, List<KeyCode>> ();
+			setKey (state, keycode);
 		}
 	}
 }

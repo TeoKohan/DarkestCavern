@@ -17,7 +17,7 @@ public class SpriteManager : MonoBehaviour {
 		sprite = gameObject.GetComponent<SpriteRenderer> ();
 	}
 
-	protected void updateGraphics() {
+	protected void update() {
 
 		switch (state) {
 
