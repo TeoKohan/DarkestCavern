@@ -3,171 +3,101 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
+[RequireComponent (typeof(Animator))]
+[RequireComponent (typeof(SpriteRenderer))]
 public class Character : MonoBehaviour {
 
-	const float movespeed = 5f;
-	const float pickUpDistance = 1f;
 
+
+	protected GameManager gameManager;
+
+	public InputManager inputManager { get; protected set; }
+	public Animator animator { get; protected set; }
+	public SpriteRenderer spriteRenderer{ get; protected set; }
+
+	public float movespeed { get; protected set; }
+    public float range { get; protected set; }
+	public float jumpForce { get; protected set; }
+	public float diveForce { get; protected set; }
+	public float airMovementMultiplier { get; protected set; }
+	public float crouchMovementMultiplier { get; protected set; }
+
+	public HP hp { get; protected set; }
 	public Inventory inventory { get; protected set; }
-
-	protected int currentZone;
 
 	protected enum Facing {left, right}
 	protected Facing facing;
 
-	protected enum State {idle, walking, mining, locked}
 	protected State state;
-	protected State previousState;
 
-	protected SpriteManager spriteManager;
-	protected GameManager gameManager;
-
-
-	public void initialize () {
-
-		this.inventory = new Inventory (new Bag (), new Helmet (), new Pickaxe ());
-
-		spriteManager = new SpriteManager ();
-		gameManager = GameManager.instance;
-
-
-		updateZone ();
-		state = State.idle;
+	protected void Awake() {
+		initialize ();
 	}
 
-	public void initialize (Inventory inventory) {
-		
-		this.inventory = inventory;
+	protected void initialize() {
 		gameManager = GameManager.instance;
 
-		updateZone ();
-		state = State.idle;
+		this.inputManager = new KeyInputManager ("character");
+		animator = GetComponent<Animator> ();
+		spriteRenderer = GetComponent<SpriteRenderer> ();
+
+		this.hp = new HP ();
+		this.inventory = new Inventory ();
+		facing = Facing.right;	
+		state = new Idle (this);
+		state.enter ();
+
+		movespeed = 5f;
+        range = 1f;
+		jumpForce = 7.5f;
+		diveForce = jumpForce;
+		airMovementMultiplier = 0.75f;
+		crouchMovementMultiplier = 0.25f;
+
+		gameManager.addCharacter (this);
 	}
 
 	public void update () {
-		spriteManager.update ();
-	}
 
-	public void update (CharacterInputData inputData) {
-		handleAction (inputData);
-		updateZone ();
-		updateGraphics();
-	}
-
-	protected void handleAction (CharacterInputData inputData) {
-
-		CharacterAction characterAction = inputData.characterAction;
-
-		//STATES
-		switch (state) {
-
-		//IDLE STATE
-		case State.idle:
-
-			switch (characterAction) {
-			case CharacterAction.action:
-				attemptMining ();
-				break;
-			case CharacterAction.move:
-				changeState (State.walking);
-				move (inputData.movement);
-				break;
-			}
-			break;
-
-			//WALKING STATE
-		case State.walking:
-
-			switch (characterAction) {
-			case CharacterAction.idle:
-				changeState (State.idle);
-				break;
-			case CharacterAction.action:
-				attemptMining ();
-				break;
-			case CharacterAction.move:
-				move (inputData.movement);
-				break;
-			}
-			break;
-
-			//MINING STATE
-		case State.mining:
-			break;
-
-		default:
-			break;
-
+		State newState = state.update ();
+		if (newState != null) {
+			state.exit ();
+			state = newState;
+			state.enter ();
 		}
 	}
 
-	protected void changeState(State newState) {
-		previousState = state;
-		state = newState;
-	}
-
-	protected void restorePreviousState() {
-		State temp = previousState;
-		previousState = state;
-		state = temp;
-	}
-
-	protected void move(float movement) {
-		
-		if (movement >= 0) { facing = Facing.right;}
-		else { facing = Facing.left;}
-
-		float result = Wall.checkCollision (transform.position.x + movement * movespeed * Time.deltaTime);
-		transform.position = new Vector3(result, transform.position.y, transform.position.z);
-	}
-
-	protected void setFacing(Facing facing) {
-		switch (facing) {
-		case Facing.right:
-			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
-			break;
-		case Facing.left:
-			transform.localScale = new Vector3 (-0.5f, 0.5f, 0.5f);
-			break;
-		default:
-			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
-			break;
-		}
-	}
-
-	protected void updateZone() {
-
-		//Reimplement if theres enough time
-		int newZone = Mathf.Clamp((int)(transform.position.x + 9.5f) / 19, 0, 5);
-		if (newZone != currentZone) {
-			currentZone = newZone;
-			gameManager.changeZone (newZone);
-		}
-	}
-
-	protected void attemptMining() {
-		
-		Node node = Node.getNode(transform.position, inventory.pickaxe.range);
-
-		if (node != null) {
-			if (gameManager.startMinigame (inventory.pickaxe, node)) {
-				changeState (State.mining);
-			}
-		} 
-		else {
-			finishMining ();
-		}
+    public void ground () {
+        transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
     }
 
-	public void finishMining() {
-		changeState (State.idle);
+	public void move(float xMovement, float yMovement) {
+
+		Facing facing;
+		if (xMovement != 0) {
+			if (xMovement > 0) {
+				facing = Facing.right;
+			} 
+			else {
+				facing = Facing.left;
+			}
+				
+			if (this.facing != facing) {
+				switchFacing ();
+			}
+		}
+
+		xMovement *= movespeed * Time.deltaTime;	
+		yMovement *= Time.deltaTime;
+
+        float xPos = gameManager.collisionManager.checkWalls(transform.position.x, transform.position.x + xMovement);
+
+        transform.position = new Vector3(xPos, transform.position.y + yMovement, transform.position.z);
 	}
 
-	protected void pause() {
-		changeState (State.locked);
-	}
+	protected void switchFacing() {
 
-	protected void unpause() {
-		restorePreviousState ();
+		facing = facing == Facing.right ? Facing.left : Facing.right;
+		transform.localScale = Vector3.Scale(transform.localScale, new Vector3 (-1f, 1f, 1f));
 	}
 }

@@ -1,0 +1,1 @@
+﻿public enum EntityState {left, up, right, down, jump, crouch, action}

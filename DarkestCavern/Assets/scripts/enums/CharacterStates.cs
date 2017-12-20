@@ -1,1 +1,0 @@
-﻿enum EntityState {idle, walking, crouch, jump, fall, action}

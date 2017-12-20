@@ -18,8 +18,9 @@ public class Bar : MonoBehaviour {
 	}
 
 	public void updatePercentage(float percentage) {
-		healthbar.rectTransform.localScale = new Vector2(percentage / 100f, 1f);
-		if (percentage >= 100f || percentage <= 0f) {
+		healthbar.rectTransform.localScale = new Vector2(percentage, 1f);
+
+		if (percentage >= 1f || percentage <= 0f) {
 			hide ();
 		} 
 		else {

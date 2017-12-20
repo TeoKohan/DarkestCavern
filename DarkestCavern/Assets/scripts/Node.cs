@@ -4,98 +4,93 @@ using UnityEngine;
 
 public class Node : MonoBehaviour {
 
-	protected static List<Node> nodeList = new List<Node>();
+    protected static List<Node> nodeList = new List<Node>();
 
-	public GameObject ores;
-	public Bar hpBar;
-	public Transform hotspot;
-	public Ore ore;
-	public int oreQuantity;
+    public float range;
 
-	public int maxhp;
-	public int armor;
+    public Bar hpBar;
+    public int maxhp;
+    public int armor;
 
-	public int hp { get; protected set;}
-	public bool active { get; protected set;}
+    public int hp { get; protected set; }
+    public bool active { get; protected set; }
 
-	protected Material material;
+    protected Material material;
 
-	public static Node getNode(Vector3 position, float range) {
+    protected bool dead {
 
-		foreach (Node N in Node.nodeList) {
-			if (N.active) {
-				float distance = Vector3.Distance (position, N.hotspot.position);
-				if (distance <= range) {
-					return N;
-				}
-			}
-		}
-		return null;
-	}
+        get {
+            return hp <= 0;
+        }
+        
+        set {
+        }
+    }
 
-	public static void refresh() {
-		foreach (Node N in Node.nodeList) {
-			N.reset ();
-		}
-	}
+    public static Node getNode(float xPosition, float range) {
 
-	public virtual void Start() {
-		material = this.GetComponent<Renderer> ().material;
-		nodeList.Add (this);
-		reset ();
-	}
+        foreach (Node N in Node.nodeList) {
+            if (N.active) {
+                float distance = Mathf.Abs(xPosition - N.getPosition());
+                if (distance <= range + N.range) {
+                    return N;
+                }
+            }
+        }
+        return null;
+    }
 
-	public virtual void reset() {
-		hp = maxhp;
-		hpBar.updatePercentage ((float)hp / (float)maxhp * 100f);
-		material.SetFloat ("_Desaturation", 0);
-		activate ();
-		ores.SetActive (true);
-	}
+    public static void resetAll() {
+        foreach (Node N in nodeList) {
+            N.reset();
+        }
+    }
 
-	public void activate() {
-		active = true;
-	}
+    void Start() {
+        initialize();
+    }
 
-	public void deactivate() {
-		active = false;
-	}
+    protected virtual void initialize () {
+        nodeList.Add(this);
+        material = GetComponent<Renderer>().material;
+        reset();
+    }
 
-	public bool damage (int damage) {
-		if (active) {
-			hp -= damage - armor;
-			hp = Mathf.Clamp (hp, 0, maxhp);
-			hpBar.updatePercentage ((float)hp / (float)maxhp * 100f);
+    public virtual void reset() {
+        hp = maxhp;
+        hpBar.updatePercentage(1f);
+        material.SetFloat("_Desaturation", 0);
+        activate();
+    }
 
-			return checkDeath ();
-		}
+    public void activate() {
+        active = true;
+    }
 
-		return false;
-	}
+    public void deactivate() {
+        active = false;
+    }
 
-	protected bool checkDeath() {
-		if (hp <= 0) {
-			yieldResources ();
-			return true;
-		}
+    public virtual void damage(int damage, Character character) {
 
-		return false;
-	}
+        Debug.Log("base damage");
 
-	protected virtual void yieldResources() {
-		GameManager.instance.character.inventory.bag.addOre (ore, oreQuantity);
-		active = false;
-		ores.SetActive (false);
-		StartCoroutine (fade (1));
-	}
+        if (active) {
+            hp -= damage - armor;
+            hp = Mathf.Clamp(hp, 0, maxhp);
+            hpBar.updatePercentage((float)hp / (float)maxhp);
 
-	IEnumerator fade(int seconds) {
-		
-		float startTime = Time.time;
-		while (Time.time - startTime < seconds) {
-			material.SetFloat ("_Desaturation", Mathf.Clamp01((Time.time - startTime) / seconds));
-			yield return null;
-		}
-		material.SetFloat ("_Desaturation", 1f);
-	}
+            if (dead) die(character);
+        }
+    }
+
+    protected virtual void die (Character character) {
+
+        return;
+    }
+
+    public virtual float getPosition() {
+
+        return transform.position.x;
+    }
 }
